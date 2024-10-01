@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { RoleRequestDto, RoleResponseDto } from './dto/dto';
+import { RoleRequestDto, RoleResponseDto } from './dtos/dto';
 import { RoleRepository } from './repositories/role.repository';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';

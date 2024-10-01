@@ -9,7 +9,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { RoleRequestDto, RoleResponseDto } from './dto/dto';
+import { RoleRequestDto, RoleResponseDto } from './dtos/dto';
 import { RoleType } from 'src/common/enums/role.enum';
 
 @Controller('/api/role')
