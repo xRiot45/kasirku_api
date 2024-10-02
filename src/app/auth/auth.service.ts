@@ -1,5 +1,9 @@
 import * as bcrypt from 'bcrypt';
-import { RegisterRequestDto } from './dtos/auth.dto';
+import {
+  LoginRequestDto,
+  LoginResponseDto,
+  RegisterRequestDto,
+} from './dtos/auth.dto';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IUsersRepository } from '../users/interfaces/users.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -8,6 +12,11 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterResponseDto } from './dtos/auth.dto';
 import { Users } from '../users/entities/users.entity';
 import { generateEmployeeNumber } from 'src/common/utils/employeeNumber.util';
+import { Response } from 'express';
+import {
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+} from 'src/configs/environment.config';
 
 @Injectable()
 export class AuthService {
@@ -87,6 +96,83 @@ export class AuthService {
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async loginUserService(
+    request: LoginRequestDto,
+    response: Response,
+  ): Promise<IBaseResponse<LoginResponseDto>> {
+    const { email, password } = request;
+
+    try {
+      const user = await this.usersRepository.findUserByEmail(email);
+      if (user && (await bcrypt.compare(password, user.password))) {
+        const payload = {
+          full_name: user.full_name,
+          email: user.email,
+          employee_number: user.employee_number,
+          role: {
+            id: user.roleId.id,
+            role_name: user.roleId.role_name,
+          },
+        };
+
+        const createAccessToken = this.jwtService.sign(payload, {
+          secret: ACCESS_TOKEN_SECRET,
+        });
+
+        const createRefreshToken = this.jwtService.sign(payload, {
+          secret: REFRESH_TOKEN_SECRET,
+          expiresIn: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        await this.usersRepository.loginUser(user);
+        response.cookie('accessToken', createAccessToken, {
+          httpOnly: true,
+          sameSite: 'none',
+          maxAge: 60 * 60 * 1000,
+        });
+
+        response.cookie('refreshToken', createRefreshToken, {
+          httpOnly: true,
+          sameSite: 'none',
+          maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        return {
+          statusCode: HttpStatus.CREATED,
+          message: 'User logged in successfully',
+          data: {
+            access_token: createAccessToken,
+            refresh_token: createRefreshToken,
+          },
+        };
+      } else {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.UNAUTHORIZED,
+            error: 'Unauthorized',
+            message: 'Email or password incorrect',
+          },
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error occurred: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error logged in: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal server error',
           message: 'Internal server error',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
