@@ -22,7 +22,7 @@ export class AuthService {
   async registerUserService(
     request: RegisterRequestDto,
   ): Promise<IBaseResponse<RegisterResponseDto>> {
-    const { email, full_name, password, roleId } = request;
+    const { email, full_name, roleId } = request;
     try {
       const emailExist = await this.usersRepository.findEmail(email);
       if (emailExist) {
@@ -48,7 +48,8 @@ export class AuthService {
         );
       }
 
-      const hashedPassword = await bcrypt.hash(password, 12);
+      const generatePassword = 'Karyawan#123';
+      const hashedPassword = await bcrypt.hash(generatePassword, 12);
       const employeeNumber = generateEmployeeNumber();
       const payload = {
         email: email,
