@@ -60,7 +60,7 @@ export class Users {
     nullable: true,
     length: 25,
   })
-  phone_number: number;
+  phone_number: string;
 
   @Column({
     type: 'enum',

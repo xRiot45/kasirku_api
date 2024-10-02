@@ -9,4 +9,6 @@ export interface IUsersRepository {
   loginUser(users: Users): Promise<Users>;
   findByRoleId(id: string): Promise<Role | undefined>;
   findByIdWithRole(id: string): Promise<Users | undefined>;
+  findAllUser(skip: number, take: number): Promise<Users[]>;
+  countUsers(): Promise<number>;
 }

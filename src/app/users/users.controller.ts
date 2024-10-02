@@ -1,34 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { AdminGuard } from 'src/common/guards/admin.guard';
+import { GetUserResponse } from './dto/users.dto';
 
-@Controller('users')
+@Controller('/api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Get('/all')
+  @UseGuards(AuthGuard, AdminGuard)
+  async findAllUsersController(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ): Promise<IBaseResponse<GetUserResponse[]>> {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.usersService.findAllUsers(pageNumber, limitNumber);
   }
 }

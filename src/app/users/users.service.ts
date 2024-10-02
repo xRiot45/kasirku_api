@@ -1,26 +1,77 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { IUsersRepository } from './interfaces/users.interface';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+import { GetUserResponse } from './dto/users.dto';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(
+    @Inject('IUsersRepository')
+    private readonly usersRepository: IUsersRepository,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
+  ) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  async findAllUsers(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<IBaseResponse<GetUserResponse[]>> {
+    try {
+      const skip = (page - 1) * limit;
+      const users = await this.usersRepository.findAllUser(skip, limit);
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+      const totalUsers = await this.usersRepository.countUsers();
+      const totalPages = Math.ceil(totalUsers / limit);
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const previousPage = hasPreviousPage ? page - 1 : null;
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find all users successfully',
+        data: users.map((user) => ({
+          id: user.id,
+          full_name: user.full_name,
+          email: user.email,
+          employee_number: user.employee_number,
+          birthday_date: user.birthday_date,
+          place_of_birth: user.place_of_birth,
+          phone_number: user.phone_number,
+          gender: user.gender,
+          address: user.address,
+          photo: user.photo,
+          role: {
+            id: user?.roleId?.id,
+            role_name: user?.roleId?.role_name,
+          },
+        })),
+        totalItems: totalUsers,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage,
+        previousPage,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error occurred: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error occurred: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

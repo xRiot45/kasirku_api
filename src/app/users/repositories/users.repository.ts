@@ -47,4 +47,17 @@ export class UsersRepository implements IUsersRepository {
       relations: ['roleId'],
     });
   }
+
+  async findAllUser(skip: number, take: number): Promise<Users[]> {
+    return this.usersRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['roleId'],
+      skip,
+      take,
+    });
+  }
+
+  async countUsers(): Promise<number> {
+    return this.usersRepository.count();
+  }
 }
