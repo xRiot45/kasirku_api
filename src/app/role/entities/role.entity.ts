@@ -1,8 +1,10 @@
+import { Users } from 'src/app/users/entities/users.entity';
 import { RoleType } from 'src/common/enums/role.enum';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -30,8 +32,8 @@ export class Role {
   })
   updatedAt: Date;
 
-  //   @OneToMany(() => Users, (users) => users.roleId)
-  //   users: Users[];
+  @OneToMany(() => Users, (users) => users.roleId)
+  users: Users[];
 
   constructor(partial: Partial<Role>) {
     Object.assign(this, partial);
