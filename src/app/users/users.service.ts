@@ -59,11 +59,11 @@ export class UsersService {
       };
     } catch (error) {
       if (error instanceof HttpException) {
-        this.logger.error(`Error occurred: ${error.message}`);
+        this.logger.error(`Error find all user: ${error.message}`);
         throw error;
       }
 
-      this.logger.error(`Error occurred: ${error}`);
+      this.logger.error(`Error find all user: ${error}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
