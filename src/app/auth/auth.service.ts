@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import {
   LoginRequestDto,
   LoginResponseDto,
+  RefreshTokenResponseDto,
   RegisterRequestDto,
 } from './dtos/auth.dto';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -12,7 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterResponseDto } from './dtos/auth.dto';
 import { Users } from '../users/entities/users.entity';
 import { generateEmployeeNumber } from 'src/common/utils/employeeNumber.util';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_SECRET,
@@ -113,6 +114,7 @@ export class AuthService {
       const user = await this.usersRepository.findUserByEmail(email);
       if (user && (await bcrypt.compare(password, user.password))) {
         const payload = {
+          id: user.id,
           full_name: user.full_name,
           email: user.email,
           employee_number: user.employee_number,
@@ -169,6 +171,77 @@ export class AuthService {
       }
 
       this.logger.error(`Error logged in: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal server error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async refreshTokenService(
+    request: Request,
+  ): Promise<IBaseResponse<RefreshTokenResponseDto>> {
+    const refreshToken = request.cookies.refreshToken;
+    if (!refreshToken) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.UNAUTHORIZED,
+          error: 'Unauthorized',
+          message: 'Refresh token not found',
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    try {
+      const { id } = this.jwtService.verify(refreshToken, {
+        secret: REFRESH_TOKEN_SECRET,
+      });
+
+      const user = await this.usersRepository.findByIdWithRole(id);
+      if (!user) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.UNAUTHORIZED,
+            error: 'Unauthorized',
+            message: 'User not found',
+          },
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const payload = {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        role: {
+          id: user.roleId.id,
+          role_name: user.roleId.role_name,
+        },
+      };
+
+      const newAccessToken = this.jwtService.sign(payload, {
+        secret: ACCESS_TOKEN_SECRET,
+      });
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Token refreshed successfully',
+        data: {
+          access_token: newAccessToken,
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error occurred: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error refreshing token: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

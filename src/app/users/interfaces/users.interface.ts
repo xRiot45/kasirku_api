@@ -7,4 +7,6 @@ export interface IUsersRepository {
   registerUser(users: Users): Promise<Users>;
   findUserByEmail(email: string): Promise<Users | undefined>;
   loginUser(users: Users): Promise<Users>;
+  findByRoleId(id: string): Promise<Role | undefined>;
+  findByIdWithRole(id: string): Promise<Users | undefined>;
 }

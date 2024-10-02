@@ -36,4 +36,15 @@ export class UsersRepository implements IUsersRepository {
   async loginUser(users: Users): Promise<Users> {
     return this.usersRepository.save(users);
   }
+
+  async findByRoleId(id: string): Promise<Role | undefined> {
+    return this.roleRepository.findOne({ where: { id } });
+  }
+
+  async findByIdWithRole(id: string): Promise<Users | undefined> {
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: ['roleId'],
+    });
+  }
 }

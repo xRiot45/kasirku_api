@@ -1,12 +1,13 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   LoginRequestDto,
   LoginResponseDto,
+  RefreshTokenResponseDto,
   RegisterRequestDto,
   RegisterResponseDto,
 } from './dtos/auth.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('/api/auth')
 export class AuthController {
@@ -25,5 +26,12 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<IBaseResponse<LoginResponseDto>> {
     return this.authService.loginUserService(request, response);
+  }
+
+  @Get('/refresh-token')
+  async refreshTokenController(
+    @Req() request: Request,
+  ): Promise<IBaseResponse<RefreshTokenResponseDto>> {
+    return this.authService.refreshTokenService(request);
   }
 }
