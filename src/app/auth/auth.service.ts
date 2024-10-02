@@ -1,26 +1,95 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import * as bcrypt from 'bcrypt';
+import { RegisterRequestDto } from './dtos/auth.dto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { IUsersRepository } from '../users/interfaces/users.interface';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterResponseDto } from './dtos/auth.dto';
+import { Users } from '../users/entities/users.entity';
+import { generateEmployeeNumber } from 'src/common/utils/employeeNumber.util';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(
+    @Inject('IUsersRepository')
+    private readonly usersRepository: IUsersRepository,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async registerUserService(
+    request: RegisterRequestDto,
+  ): Promise<IBaseResponse<RegisterResponseDto>> {
+    const { email, full_name, password, roleId } = request;
+    try {
+      const emailExist = await this.usersRepository.findEmail(email);
+      if (emailExist) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.CONFLICT,
+            error: 'Conflict',
+            message: 'Email already registered',
+          },
+          HttpStatus.CONFLICT,
+        );
+      }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+      const role = await this.usersRepository.findRoleId(roleId);
+      if (!role) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Role Not Found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const employeeNumber = generateEmployeeNumber();
+      const payload = {
+        email: email,
+        full_name: full_name,
+        password: hashedPassword,
+        employee_number: employeeNumber,
+        roleId: role,
+      };
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+      const user = new Users(payload);
+      const registerUser = await this.usersRepository.registerUser(user);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Register user successfully',
+        data: {
+          id: registerUser.id,
+          email: registerUser.email,
+          full_name: registerUser.full_name,
+          employee_number: registerUser.employee_number,
+          role: {
+            id: registerUser?.roleId?.id,
+            role_name: registerUser?.roleId?.role_name,
+          },
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error register user: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error register user: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
