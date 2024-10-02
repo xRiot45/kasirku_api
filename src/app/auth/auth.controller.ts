@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Res, Get, Req, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Get,
+  Req,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   LoginRequestDto,
@@ -8,6 +17,7 @@ import {
   RegisterResponseDto,
 } from './dtos/auth.dto';
 import { Request, Response } from 'express';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @Controller('/api/auth')
 export class AuthController {
@@ -36,6 +46,7 @@ export class AuthController {
   }
 
   @Delete('/logout')
+  @UseGuards(AuthGuard)
   async logoutUserController(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
