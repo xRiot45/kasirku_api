@@ -252,4 +252,41 @@ export class AuthService {
       );
     }
   }
+
+  async logoutUserService(
+    request: Request,
+    response: Response,
+  ): Promise<WebResponse> {
+    const { accessToken, refreshToken } = request.cookies;
+
+    if (!refreshToken && !accessToken) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.UNAUTHORIZED,
+          error: 'Unauthorized',
+          message: 'User already logged out or not logged in',
+        },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    try {
+      response.clearCookie('accessToken');
+      response.clearCookie('refreshToken');
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Logout successfully',
+      };
+    } catch (error) {
+      this.logger.error(`Error logout: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal server error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

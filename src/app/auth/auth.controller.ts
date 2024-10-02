@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Get, Req } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get, Req, Delete } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   LoginRequestDto,
@@ -33,5 +33,13 @@ export class AuthController {
     @Req() request: Request,
   ): Promise<IBaseResponse<RefreshTokenResponseDto>> {
     return this.authService.refreshTokenService(request);
+  }
+
+  @Delete('/logout')
+  async logoutUserController(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<WebResponse> {
+    return this.authService.logoutUserService(request, response);
   }
 }
