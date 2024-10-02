@@ -60,4 +60,11 @@ export class UsersRepository implements IUsersRepository {
   async countUsers(): Promise<number> {
     return this.usersRepository.count();
   }
+
+  async findUser(id: string): Promise<Users | undefined> {
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: ['roleId'],
+    });
+  }
 }

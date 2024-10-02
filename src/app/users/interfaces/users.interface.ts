@@ -11,4 +11,5 @@ export interface IUsersRepository {
   findByIdWithRole(id: string): Promise<Users | undefined>;
   findAllUser(skip: number, take: number): Promise<Users[]>;
   countUsers(): Promise<number>;
+  findUser(id: string): Promise<Users | undefined>;
 }

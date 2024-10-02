@@ -3,10 +3,19 @@ import { UsersService } from './users.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { GetUserResponse } from './dto/users.dto';
+import { AuthDecorator } from 'src/common/decorators/auth.decorator';
 
 @Controller('/api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('/me')
+  @UseGuards(AuthGuard)
+  async findUserController(
+    @AuthDecorator() userPayload: { id: string },
+  ): Promise<IBaseResponse<GetUserResponse>> {
+    return this.usersService.findUserService(userPayload);
+  }
 
   @Get('/all')
   @UseGuards(AuthGuard, AdminGuard)

@@ -13,6 +13,60 @@ export class UsersService {
     private readonly logger: Logger,
   ) {}
 
+  async findUserService(decodedTokenPayload: {
+    id: string;
+  }): Promise<IBaseResponse<GetUserResponse>> {
+    try {
+      const user = await this.usersRepository.findUser(decodedTokenPayload.id);
+      if (!user) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'User not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User found successfully',
+        data: {
+          id: user.id,
+          full_name: user.full_name,
+          email: user.email,
+          employee_number: user.employee_number,
+          birthday_date: user.birthday_date,
+          place_of_birth: user.place_of_birth,
+          phone_number: user.phone_number,
+          gender: user.gender,
+          address: user.address,
+          photo: user.photo,
+          role: {
+            id: user?.roleId?.id,
+            role_name: user?.roleId?.role_name,
+          },
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find user: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find user: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findAllUsers(
     page: number = 1,
     limit: number = 10,
