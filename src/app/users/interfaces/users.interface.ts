@@ -12,4 +12,5 @@ export interface IUsersRepository {
   findAllUser(skip: number, take: number): Promise<Users[]>;
   countUsers(): Promise<number>;
   findUser(id: string): Promise<Users | undefined>;
+  save(users: Users): Promise<Users>;
 }

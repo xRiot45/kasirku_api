@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
@@ -26,5 +26,10 @@ export class UsersController {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
     return this.usersService.findAllUsers(pageNumber, limitNumber);
+  }
+
+  @Put('/reset-password/:id')
+  async resetPasswordController(@Param('id') id: string): Promise<WebResponse> {
+    return this.usersService.resetPassword(id);
   }
 }

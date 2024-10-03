@@ -3,6 +3,7 @@ import { IUsersRepository } from './interfaces/users.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { GetUserResponse } from './dto/users.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -118,6 +119,47 @@ export class UsersService {
       }
 
       this.logger.error(`Error find all user: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async resetPassword(id: string): Promise<WebResponse> {
+    try {
+      const user = await this.usersRepository.findByIdWithRole(id);
+      if (!user) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'User not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const roleName = user.roleId.role_name;
+      const resetPassword = await bcrypt.hash(`${roleName}#123`, 12);
+      user.password = resetPassword;
+
+      await this.usersRepository.save(user);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Reset password successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error occurred: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error occurred: ${error}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

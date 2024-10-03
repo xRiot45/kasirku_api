@@ -67,4 +67,8 @@ export class UsersRepository implements IUsersRepository {
       relations: ['roleId'],
     });
   }
+
+  async save(users: Users): Promise<Users> {
+    return this.usersRepository.save(users);
+  }
 }
