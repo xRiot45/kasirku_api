@@ -29,6 +29,7 @@ export class UsersController {
   }
 
   @Put('/reset-password/:id')
+  @UseGuards(AuthGuard, AdminGuard)
   async resetPasswordController(@Param('id') id: string): Promise<WebResponse> {
     return this.usersService.resetPassword(id);
   }
