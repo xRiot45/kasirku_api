@@ -58,7 +58,7 @@ export class AuthService {
         );
       }
 
-      const generatePassword = 'Kasir#123';
+      const generatePassword = 'Employee#123';
       const hashedPassword = await bcrypt.hash(generatePassword, 12);
       const employeeNumber = generateEmployeeNumber();
       const payload = {
