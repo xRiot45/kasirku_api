@@ -1,3 +1,6 @@
+import { IsEnum, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { GenderType } from 'src/common/enums/gender.enum';
+
 export class GetUserResponse {
   readonly id: string;
   readonly full_name: string;
@@ -13,4 +16,34 @@ export class GetUserResponse {
     readonly id: string;
     readonly role_name: string;
   };
+}
+
+export class SearchUsersDto {
+  @IsOptional()
+  @IsNumberString()
+  readonly page: string = '1';
+
+  @IsOptional()
+  @IsNumberString()
+  readonly limit: string = '10';
+
+  @IsOptional()
+  @IsString()
+  readonly full_name?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly email?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly employee_number?: string;
+
+  @IsOptional()
+  @IsEnum(GenderType)
+  readonly gender?: GenderType;
+
+  @IsOptional()
+  @IsString()
+  readonly role_name?: string;
 }
