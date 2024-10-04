@@ -1,6 +1,7 @@
 import { Role } from 'src/app/role/entities/role.entity';
 import { Users } from '../entities/users.entity';
 import { GenderType } from 'src/common/enums/gender.enum';
+import { DeleteResult } from 'typeorm';
 
 export interface IUsersRepository {
   findEmail(email: string): Promise<Users | undefined>;
@@ -31,4 +32,5 @@ export interface IUsersRepository {
     gender: GenderType,
   ): Promise<Users[]>;
   findById(id: string): Promise<Users>;
+  delete(id: string): Promise<DeleteResult>;
 }

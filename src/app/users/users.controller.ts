@@ -1,8 +1,21 @@
-import { Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
-import { GetUserResponse, SearchUsersDto } from './dtos/users.dto';
+import {
+  DeleteUserRequestDto,
+  GetUserResponse,
+  SearchUsersDto,
+} from './dtos/users.dto';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
 
 @Controller('/api/users')
@@ -68,5 +81,14 @@ export class UsersController {
   @UseGuards(AuthGuard, AdminGuard)
   async resetPasswordController(@Param('id') id: string): Promise<WebResponse> {
     return this.usersService.resetPasswordService(id);
+  }
+
+  @Delete('/delete/:id')
+  @UseGuards(AuthGuard, AdminGuard)
+  async deleteUserController(
+    @Param('id') id: string,
+    @Body() request: DeleteUserRequestDto,
+  ): Promise<WebResponse> {
+    return this.usersService.deleteUser(id, request);
   }
 }

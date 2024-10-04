@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IUsersRepository } from './interfaces/users.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { GetUserResponse } from './dtos/users.dto';
+import { DeleteUserRequestDto, GetUserResponse } from './dtos/users.dto';
 import * as bcrypt from 'bcrypt';
 import { GenderType } from 'src/common/enums/gender.enum';
 
@@ -310,6 +310,75 @@ export class UsersService {
       }
 
       this.logger.error(`Error occurred: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteUser(
+    id: string,
+    request: DeleteUserRequestDto,
+  ): Promise<WebResponse> {
+    try {
+      const user = await this.usersRepository.findById(id);
+      if (!user) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'User not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (
+        user.email !== request.email ||
+        user.employee_number !== request.employee_number
+      ) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Invalid Data',
+            message: 'Email or Employee number is incorrect',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        request.password,
+        user.password,
+      );
+      if (!isPasswordValid) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Invalid Password',
+            message: 'Password is incorrect',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      await this.usersRepository.delete(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User deleted successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error delete user: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error delete user: ${error}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

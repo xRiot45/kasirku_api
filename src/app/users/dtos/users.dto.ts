@@ -47,3 +47,14 @@ export class SearchUsersDto {
   @IsString()
   readonly role_name?: string;
 }
+
+export class DeleteUserRequestDto {
+  @IsString()
+  readonly email: string;
+
+  @IsString()
+  readonly employee_number: string;
+
+  @IsString()
+  readonly password: string;
+}

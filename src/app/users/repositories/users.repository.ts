@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IUsersRepository } from '../interfaces/users.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entities/users.entity';
 import { Role } from 'src/app/role/entities/role.entity';
 import { GenderType } from 'src/common/enums/gender.enum';
@@ -166,5 +166,9 @@ export class UsersRepository implements IUsersRepository {
       where: { id },
       relations: ['roleId'],
     });
+  }
+
+  async delete(id: string): Promise<DeleteResult> {
+    return this.usersRepository.delete(id);
   }
 }
