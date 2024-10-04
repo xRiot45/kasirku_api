@@ -160,4 +160,11 @@ export class UsersRepository implements IUsersRepository {
 
     return query.getMany();
   }
+
+  async findById(id: string): Promise<Users> {
+    return this.usersRepository.findOne({
+      where: { id },
+      relations: ['roleId'],
+    });
+  }
 }

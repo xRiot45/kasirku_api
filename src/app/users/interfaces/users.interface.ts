@@ -30,4 +30,5 @@ export interface IUsersRepository {
     employee_number: string,
     gender: GenderType,
   ): Promise<Users[]>;
+  findById(id: string): Promise<Users>;
 }

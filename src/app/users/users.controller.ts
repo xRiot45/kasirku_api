@@ -2,7 +2,7 @@ import { Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
-import { GetUserResponse, SearchUsersDto } from './dto/users.dto';
+import { GetUserResponse, SearchUsersDto } from './dtos/users.dto';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
 
 @Controller('/api/users')
@@ -25,7 +25,15 @@ export class UsersController {
   ): Promise<IBaseResponse<GetUserResponse[]>> {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
-    return this.usersService.findAllUsers(pageNumber, limitNumber);
+    return this.usersService.findAllUsersService(pageNumber, limitNumber);
+  }
+
+  @Get('/show/:id')
+  @UseGuards(AdminGuard, AuthGuard)
+  async findUserByIdController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<GetUserResponse>> {
+    return this.usersService.findUserByIdService(id);
   }
 
   @Get('/search')
@@ -59,6 +67,6 @@ export class UsersController {
   @Put('/reset-password/:id')
   @UseGuards(AuthGuard, AdminGuard)
   async resetPasswordController(@Param('id') id: string): Promise<WebResponse> {
-    return this.usersService.resetPassword(id);
+    return this.usersService.resetPasswordService(id);
   }
 }

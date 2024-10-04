@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IUsersRepository } from './interfaces/users.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { GetUserResponse } from './dto/users.dto';
+import { GetUserResponse } from './dtos/users.dto';
 import * as bcrypt from 'bcrypt';
 import { GenderType } from 'src/common/enums/gender.enum';
 
@@ -69,7 +69,7 @@ export class UsersService {
     }
   }
 
-  async findAllUsers(
+  async findAllUsersService(
     page: number = 1,
     limit: number = 10,
   ): Promise<IBaseResponse<GetUserResponse[]>> {
@@ -120,6 +120,61 @@ export class UsersService {
       }
 
       this.logger.error(`Error find all user: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findUserByIdService(
+    id: string,
+  ): Promise<IBaseResponse<GetUserResponse>> {
+    try {
+      const user = await this.usersRepository.findById(id);
+
+      if (!user) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'User not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find user by ID successfully',
+        data: {
+          id: user.id,
+          full_name: user.full_name,
+          email: user.email,
+          employee_number: user.employee_number,
+          birthday_date: user.birthday_date,
+          place_of_birth: user.place_of_birth,
+          phone_number: user.phone_number,
+          gender: user.gender,
+          address: user.address,
+          photo: user.photo,
+          role: {
+            id: user?.roleId?.id,
+            role_name: user?.roleId?.role_name,
+          },
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find user by id: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find user by id: ${error}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -225,7 +280,7 @@ export class UsersService {
     }
   }
 
-  async resetPassword(id: string): Promise<WebResponse> {
+  async resetPasswordService(id: string): Promise<WebResponse> {
     try {
       const user = await this.usersRepository.findByIdWithRole(id);
       if (!user) {
