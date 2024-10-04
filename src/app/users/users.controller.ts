@@ -4,6 +4,7 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { GetUserResponse } from './dto/users.dto';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
+import { GenderType } from 'src/common/enums/gender.enum';
 
 @Controller('/api/users')
 export class UsersController {
@@ -26,6 +27,30 @@ export class UsersController {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
     return this.usersService.findAllUsers(pageNumber, limitNumber);
+  }
+
+  @Get('/search')
+  @UseGuards(AuthGuard, AdminGuard)
+  async searchUsersController(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+    @Query('full_name') full_name: string,
+    @Query('email') email: string,
+    @Query('employee_number') employee_number: string,
+    @Query('gender') gender: GenderType,
+    @Query('role_name') role_name: string,
+  ): Promise<IBaseResponse<GetUserResponse[]>> {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.usersService.searchUsersService(
+      pageNumber,
+      limitNumber,
+      full_name,
+      email,
+      role_name,
+      employee_number,
+      gender,
+    );
   }
 
   @Put('/reset-password/:id')

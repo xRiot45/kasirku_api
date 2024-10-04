@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from '../entities/users.entity';
 import { Role } from 'src/app/role/entities/role.entity';
+import { GenderType } from 'src/common/enums/gender.enum';
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -70,5 +71,93 @@ export class UsersRepository implements IUsersRepository {
 
   async save(users: Users): Promise<Users> {
     return this.usersRepository.save(users);
+  }
+
+  async countFilteredUsers(
+    full_name: string,
+    email: string,
+    role_name: string,
+    employee_number: string,
+    gender: GenderType,
+  ): Promise<number> {
+    const query = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roleId', 'role');
+
+    if (full_name) {
+      query.andWhere('user.full_name LIKE :full_name', {
+        full_name: `%${full_name}%`,
+      });
+    }
+
+    if (email) {
+      query.andWhere('user.email LIKE :email', { email: `%${email}%` });
+    }
+
+    if (role_name) {
+      query.andWhere('role.role_name LIKE :role_name', {
+        role_name: `%${role_name}%`,
+      });
+    }
+
+    if (employee_number) {
+      query.andWhere('user.employee_number LIKE :employee_number', {
+        employee_number: `%${employee_number}%`,
+      });
+    }
+
+    if (gender) {
+      query.andWhere('user.gender LIKE :gender', {
+        gender: `%${gender}%`,
+      });
+    }
+
+    return query.getCount();
+  }
+
+  searchUsers(
+    skip: number,
+    take: number,
+    full_name: string,
+    email: string,
+    role_name: string,
+    employee_number: string,
+    gender: GenderType,
+  ): Promise<Users[]> {
+    const query = this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roleId', 'role')
+      .skip(skip)
+      .take(take);
+
+    if (full_name) {
+      query.where('user.full_name LIKE :full_name', {
+        full_name: `%${full_name}%`,
+      });
+    }
+
+    if (email) {
+      query.where('user.email LIKE :email', { email: `%${email}%` });
+    }
+
+    if (role_name) {
+      query.where('role.role_name LIKE :role_name', {
+        role_name: `%${role_name}%`,
+      });
+    }
+
+    if (employee_number) {
+      query.where('role.employee_number LIKE :employee_number', {
+        employee_number: `%${employee_number}%`,
+      });
+    }
+
+    if (gender) {
+      query.where('user.gender LIKE :gender', {
+        gender: `%${gender}%`,
+      });
+    }
+
+    return query.getMany();
   }
 }
