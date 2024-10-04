@@ -32,23 +32,21 @@ export class UsersController {
   @Get('/search')
   @UseGuards(AuthGuard, AdminGuard)
   async searchUsersController(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
-    @Query('full_name') full_name: string,
+    @Query('page') pageNumber: string = '1',
+    @Query('limit') limitNumber: string = '10',
+    @Query('full_name') fullName: string,
     @Query('email') email: string,
-    @Query('employee_number') employee_number: string,
+    @Query('employee_number') employeeNumber: string,
     @Query('gender') gender: GenderType,
-    @Query('role_name') role_name: string,
+    @Query('role_name') roleName: string,
   ): Promise<IBaseResponse<GetUserResponse[]>> {
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
     return this.usersService.searchUsersService(
-      pageNumber,
-      limitNumber,
-      full_name,
+      parseInt(pageNumber, 10),
+      parseInt(limitNumber, 10),
+      fullName,
       email,
-      role_name,
-      employee_number,
+      roleName,
+      employeeNumber,
       gender,
     );
   }
