@@ -64,4 +64,12 @@ export class ProductCategoryController {
       request,
     );
   }
+
+  @Delete('/delete/:id')
+  @UseGuards(AdminGuard, AuthGuard)
+  async deleteProductCategoryController(
+    @Param('id') id: string,
+  ): Promise<WebResponse> {
+    return this.productCategoryService.deleteProductCategoryService(id);
+  }
 }

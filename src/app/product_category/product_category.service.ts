@@ -237,4 +237,41 @@ export class ProductCategoryService {
       );
     }
   }
+
+  async deleteProductCategoryService(id: string): Promise<WebResponse> {
+    try {
+      const productCategory = await this.productCategoryRepository.findById(id);
+      if (!productCategory) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product Category not found or already deleted',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.productCategoryRepository.deleteProductCategory(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Product Category deleted successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error delete product category: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error delete product category: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
