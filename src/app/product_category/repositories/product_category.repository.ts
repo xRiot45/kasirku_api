@@ -42,12 +42,42 @@ export class ProductCategoryRepository implements IProductCategory {
     return await this.productCategoryRepository.findOne({ where: { id } });
   }
 
+  async countFilteredProductCategory(
+    product_category_name: string,
+  ): Promise<number> {
+    const query =
+      this.productCategoryRepository.createQueryBuilder('product_category');
+
+    if (product_category_name) {
+      query.andWhere(
+        'LOWER(product_category_name) LIKE :product_category_name',
+        {
+          product_category_name: `%${product_category_name.toLowerCase()}%`,
+        },
+      );
+    }
+
+    return await query.getCount();
+  }
+
   async searchProductCategory(
-    productCategoryName: string,
-  ): Promise<ProductCategory> {
-    return await this.productCategoryRepository.findOne({
-      where: { product_category_name: productCategoryName },
-    });
+    skip: number,
+    take: number,
+    product_category_name: string,
+  ): Promise<ProductCategory[]> {
+    const query = this.productCategoryRepository
+      .createQueryBuilder('product_category')
+      .skip(skip)
+      .take(take);
+
+    if (product_category_name) {
+      query.where(
+        'LOWER(product_category.product_category_name) LIKE :product_category_name',
+        { product_category_name: `%${product_category_name.toLowerCase()}%` },
+      );
+    }
+
+    return query.getMany();
   }
 
   async updateProductCategory(

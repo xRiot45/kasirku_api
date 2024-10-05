@@ -13,6 +13,7 @@ import { ProductCategoryService } from './product_category.service';
 import {
   ProductCategoryRequestDto,
   ProductCategoryResponseDto,
+  SearchProductCategoryDto,
 } from './dtos/product_category.dto';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -51,6 +52,21 @@ export class ProductCategoryController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<ProductCategoryResponseDto>> {
     return this.productCategoryService.findProductCategoryByIdService(id);
+  }
+
+  @Get('/search')
+  @UseGuards(AdminGuard, AuthGuard)
+  async searchProductCategoryController(
+    @Query() query: SearchProductCategoryDto,
+  ): Promise<IBaseResponse<ProductCategoryResponseDto[]>> {
+    const { page, limit, product_category_name } = query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.productCategoryService.searchProductCategoryService(
+      pageNumber,
+      limitNumber,
+      product_category_name,
+    );
   }
 
   @Put('/update/:id')

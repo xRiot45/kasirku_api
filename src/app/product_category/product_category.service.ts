@@ -171,6 +171,80 @@ export class ProductCategoryService {
     }
   }
 
+  async searchProductCategoryService(
+    page: number = 1,
+    limit: number = 1,
+    product_category_name: string,
+  ): Promise<IBaseResponse<ProductCategoryResponseDto[]>> {
+    try {
+      const skip = (page - 1) * limit;
+      const totalProductCategories =
+        await this.productCategoryRepository.countFilteredProductCategory(
+          product_category_name,
+        );
+
+      const totalPages = Math.ceil(totalProductCategories / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const previousPage = hasPreviousPage ? page - 1 : null;
+
+      const productCategories =
+        await this.productCategoryRepository.searchProductCategory(
+          skip,
+          limit,
+          product_category_name,
+        );
+
+      if (productCategories.length === 0) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product Category not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const results: ProductCategoryResponseDto[] = productCategories.map(
+        (productCategory) => ({
+          id: productCategory.id,
+          product_category_name: productCategory.product_category_name,
+        }),
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Search product category successfully',
+        data: results,
+        totalItems: totalProductCategories,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage,
+        previousPage,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error search product category: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error search product category: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async updateProductCategoryService(
     id: string,
     request: ProductCategoryRequestDto,

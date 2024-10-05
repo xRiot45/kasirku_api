@@ -10,10 +10,13 @@ export interface IProductCategory {
     take: number,
   ): Promise<ProductCategory[]>;
   countProductCategory(): Promise<number>;
+  countFilteredProductCategory(product_category_name: string): Promise<number>;
   findById(id: string): Promise<ProductCategory>;
   searchProductCategory(
+    skip: number,
+    take: number,
     product_category_name: string,
-  ): Promise<ProductCategory>;
+  ): Promise<ProductCategory[]>;
   updateProductCategory(
     id: string,
     data: Partial<ProductCategory>,
