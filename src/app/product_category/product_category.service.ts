@@ -170,4 +170,71 @@ export class ProductCategoryService {
       );
     }
   }
+
+  async updateProductCategoryService(
+    id: string,
+    request: ProductCategoryRequestDto,
+  ): Promise<IBaseResponse<ProductCategoryResponseDto>> {
+    const { product_category_name } = request;
+    try {
+      const productCategory = await this.productCategoryRepository.findById(id);
+
+      if (!productCategory) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product Category not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const productCategoryExist =
+        await this.productCategoryRepository.findByProductCategoryName(
+          product_category_name,
+        );
+
+      if (productCategoryExist && productCategoryExist.id !== id) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.CONFLICT,
+            error: 'Conflict',
+            message: 'Product Category already exists',
+          },
+          HttpStatus.CONFLICT,
+        );
+      }
+
+      await this.productCategoryRepository.updateProductCategory(id, {
+        product_category_name,
+      });
+      const updatedProductCategory =
+        await this.productCategoryRepository.findById(id);
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Update product category successfully',
+        data: {
+          id: updatedProductCategory.id,
+          product_category_name: updatedProductCategory.product_category_name,
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error Updated product category: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error Updated product category: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

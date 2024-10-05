@@ -3,11 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { ProductCategoryService } from './product_category.service';
 import {
@@ -51,5 +51,17 @@ export class ProductCategoryController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<ProductCategoryResponseDto>> {
     return this.productCategoryService.findProductCategoryByIdService(id);
+  }
+
+  @Put('/update/:id')
+  @UseGuards(AdminGuard, AuthGuard)
+  async updateProductCategoryController(
+    @Param('id') id: string,
+    @Body() request: ProductCategoryRequestDto,
+  ): Promise<IBaseResponse<ProductCategoryResponseDto>> {
+    return this.productCategoryService.updateProductCategoryService(
+      id,
+      request,
+    );
   }
 }
