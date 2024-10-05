@@ -44,4 +44,12 @@ export class ProductCategoryController {
       limitNumber,
     );
   }
+
+  @Get('/show/:id')
+  @UseGuards(AdminGuard, AuthGuard)
+  async findProductCategoryByIdController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<ProductCategoryResponseDto>> {
+    return this.productCategoryService.findProductCategoryByIdService(id);
+  }
 }

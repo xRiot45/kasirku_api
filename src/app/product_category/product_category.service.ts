@@ -128,4 +128,46 @@ export class ProductCategoryService {
       );
     }
   }
+
+  async findProductCategoryByIdService(
+    id: string,
+  ): Promise<IBaseResponse<ProductCategoryResponseDto>> {
+    try {
+      const productCategory = await this.productCategoryRepository.findById(id);
+      if (!productCategory) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product Category not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find product category successfully',
+        data: {
+          id: productCategory.id,
+          product_category_name: productCategory.product_category_name,
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find product category: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find product category: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
