@@ -321,7 +321,7 @@ export class UsersService {
     }
   }
 
-  async deleteUser(
+  async deleteUserService(
     id: string,
     request: DeleteUserRequestDto,
   ): Promise<WebResponse> {

@@ -89,6 +89,6 @@ export class UsersController {
     @Param('id') id: string,
     @Body() request: DeleteUserRequestDto,
   ): Promise<WebResponse> {
-    return this.usersService.deleteUser(id, request);
+    return this.usersService.deleteUserService(id, request);
   }
 }
