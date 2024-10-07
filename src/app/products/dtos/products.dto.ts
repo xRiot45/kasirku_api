@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { ProductStatusType } from 'src/common/enums/product-status.enum';
 
 class ProductVariantDto {
   @IsString()
@@ -63,6 +64,7 @@ export class ProductResponseDto {
   readonly product_description: string;
   readonly product_variants: ProductVariantDto[];
   readonly product_photos: ProductPhotoDto[];
+  readonly product_status: ProductStatusType;
   readonly product_category: {
     readonly id: string;
     readonly product_category_name: string;

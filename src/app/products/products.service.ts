@@ -93,6 +93,7 @@ export class ProductService {
           product_description: createProduct.product_description,
           product_variants: createProduct.product_variants,
           product_photos: createProduct.product_photos,
+          product_status: createProduct.product_status,
           product_category: {
             id: createProduct.productCategoryId.id,
             product_category_name:
