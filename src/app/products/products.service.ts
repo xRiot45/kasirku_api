@@ -1,13 +1,15 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { IProductsRepository } from './interfaces/products.interface';
+import * as fs from 'fs';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import * as path from 'path';
+import { generateProductCode } from 'src/common/utils/productCode.util';
 import { Logger } from 'winston';
 import {
   CreateProductRequestDto,
   ProductResponseDto,
 } from './dtos/products.dto';
-import { generateProductCode } from 'src/common/utils/productCode.util';
 import { Products } from './entities/products.entity';
+import { IProductsRepository } from './interfaces/products.interface';
 
 @Injectable()
 export class ProductService {
@@ -132,6 +134,20 @@ export class ProductService {
         );
       }
 
+      if (product.product_photos && Array.isArray(product.product_photos)) {
+        product.product_photos.forEach((photoObject) => {
+          if (photoObject?.filename) {
+            const filePath = path.join(
+              __dirname,
+              './uploads',
+              photoObject.filename,
+            );
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath); // Menghapus file
+            }
+          }
+        });
+      }
       await this.productRepository.deleteProduct(id);
       return {
         statusCode: HttpStatus.OK,
