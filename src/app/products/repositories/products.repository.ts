@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { IProductsRepository } from '../interfaces/products.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Products } from '../entities/products.entity';
-import { Repository } from 'typeorm';
 import { ProductCategory } from 'src/app/product_category/entities/product_category.entity';
+import { DeleteResult, Repository } from 'typeorm';
+import { Products } from '../entities/products.entity';
+import { IProductsRepository } from '../interfaces/products.interface';
 
 @Injectable()
 export class ProductsRepository implements IProductsRepository {
@@ -28,6 +28,16 @@ export class ProductsRepository implements IProductsRepository {
     id: string,
   ): Promise<ProductCategory | undefined> {
     return await this.productCategoryRepository.findOne({
+      where: { id },
+    });
+  }
+
+  async deleteProduct(id: string): Promise<DeleteResult> {
+    return await this.productsRepository.delete(id);
+  }
+
+  async findById(id: string): Promise<Products | undefined> {
+    return await this.productsRepository.findOne({
       where: { id },
     });
   }

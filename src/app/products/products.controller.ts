@@ -1,13 +1,18 @@
 import {
   Body,
   Controller,
+  Delete,
+  Param,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { plainToClass } from 'class-transformer';
 import { diskStorage } from 'multer';
+import { AdminGuard } from 'src/common/guards/admin.guard';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 import { imageFileFilter, imageFileName } from 'src/common/utils/fileUploads';
 import {
   CreateProductRequestDto,
@@ -20,6 +25,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post('/create')
+  @UseGuards(AuthGuard, AdminGuard)
   @UseInterceptors(
     FilesInterceptor('product_photos', 10, {
       storage: diskStorage({
@@ -41,5 +47,11 @@ export class ProductController {
     });
 
     return this.productService.createProductService(createProduct);
+  }
+
+  @Delete('/delete/:id')
+  @UseGuards(AuthGuard, AdminGuard)
+  async deleteProductController(@Param('id') id: string): Promise<WebResponse> {
+    return this.productService.deleteProductService(id);
   }
 }

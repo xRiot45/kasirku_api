@@ -103,7 +103,42 @@ export class ProductService {
       };
     } catch (error) {
       this.logger.error(`Error create product: ${error.message}`);
+      if (error instanceof HttpException) {
+        throw error;
+      }
 
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteProductService(id: string): Promise<WebResponse> {
+    try {
+      const product = await this.productRepository.findById(id);
+      if (!product) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.productRepository.deleteProduct(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Product deleted successfully',
+      };
+    } catch (error) {
+      this.logger.error(`Error create product: ${error.message}`);
       if (error instanceof HttpException) {
         throw error;
       }
