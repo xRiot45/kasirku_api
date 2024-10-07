@@ -3,6 +3,7 @@ import { IUsersRepository } from './interfaces/users.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import {
+  ChangePasswordRequestDto,
   DeleteUserRequestDto,
   GetUserResponse,
   UpdateProfileRequestDto,
@@ -483,6 +484,88 @@ export class UsersService {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Internal Server Error',
           message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async changePasswordService(
+    userId: string,
+    request: ChangePasswordRequestDto,
+  ): Promise<WebResponse> {
+    const { email, old_password, new_password, confirm_password } = request;
+    try {
+      const user = await this.usersRepository.findById(userId);
+      if (!user) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'User not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const checkOldPassword = await bcrypt.compare(
+        old_password,
+        user.password,
+      );
+
+      if (!checkOldPassword) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Invalid Password',
+            message: 'Old password is incorrect',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (email !== user.email) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Invalid Email',
+            message: 'Email is incorrect',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (new_password !== confirm_password) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Bad Request',
+            message: 'New password and Confirm password do not match',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const hashedPassword = await bcrypt.hash(new_password, 12);
+      user.password = hashedPassword;
+
+      await this.usersRepository.save(user);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Change password successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error change password: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error password: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

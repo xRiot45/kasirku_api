@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import {
+  ChangePasswordRequestDto,
   DeleteUserRequestDto,
   GetUserResponse,
   SearchUsersDto,
@@ -25,6 +26,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter, imageFileName } from 'src/common/utils/fileUploads';
 import { diskStorage } from 'multer';
 import { Users } from './entities/users.entity';
+import { UserDecorator } from 'src/common/decorators/user.decorator';
 
 @Controller('/api/users')
 export class UsersController {
@@ -123,6 +125,18 @@ export class UsersController {
     return this.usersService.updateProfileService(
       authenticatedUser.id,
       updateProfile,
+    );
+  }
+
+  @Put('/change-password')
+  @UseGuards(AuthGuard)
+  async changePasswordController(
+    @UserDecorator() authenticatedUser: Users,
+    @Body() request: ChangePasswordRequestDto,
+  ): Promise<WebResponse> {
+    return this.usersService.changePasswordService(
+      authenticatedUser.id,
+      request,
     );
   }
 }

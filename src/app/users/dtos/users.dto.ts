@@ -1,11 +1,15 @@
 import { Transform } from 'class-transformer';
 import {
   IsDate,
+  IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
+  Matches,
   MaxLength,
+  MinLength,
 } from 'class-validator';
 import { GenderType } from 'src/common/enums/gender.enum';
 
@@ -104,4 +108,42 @@ export class UpdateProfileRequestDto {
   @IsString()
   @IsOptional()
   readonly photo?: Express.Multer.File;
+}
+
+export class ChangePasswordRequestDto {
+  @IsEmail()
+  @MinLength(3, { message: 'The email must be at least 3 characters long' })
+  @MaxLength(100, { message: 'The email must be at most 100 characters long' })
+  @IsNotEmpty()
+  readonly email: string;
+
+  @IsString()
+  @MinLength(6, { message: 'The password must be at least 6 characters long' })
+  @MaxLength(100, {
+    message: 'The password must be at most 100 characters long',
+  })
+  @IsNotEmpty()
+  readonly old_password: string;
+
+  @IsString()
+  @MinLength(6, { message: 'The password must be at least 6 characters long' })
+  @MaxLength(100, {
+    message: 'The password must be at most 100 characters long',
+  })
+  @IsNotEmpty()
+  @Matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}/, {
+    message:
+      'New password must include at least one uppercase letter, one lowercase letter, one number, and one special character.',
+  })
+  readonly new_password: string;
+
+  @IsString()
+  @MinLength(6, {
+    message: 'Confirm password must be at least 6 characters long.',
+  })
+  @MaxLength(100, {
+    message: 'Confirm password must be at most 100 characters long.',
+  })
+  @IsNotEmpty()
+  readonly confirm_password: string;
 }
