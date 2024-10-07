@@ -1,42 +1,46 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
-import { CreateProductDto } from './dtos/create-product.dto';
-import { UpdateProductDto } from './dtos/update-product.dto';
+import { CreateProductRequestDto } from './dtos/products.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+// import { imageFileFilter, imageFileName } from 'src/common/utils/fileUploads';
+import { plainToClass } from 'class-transformer';
+import { extname } from 'path';
 
-@Controller('product')
+@Controller('/api/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
-  }
+  @Post('/create')
+  @UseInterceptors(
+    FilesInterceptor('product_photos', 10, {
+      storage: diskStorage({
+        destination: './uploads', // Folder untuk menyimpan file
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  async createProductController(
+    @Body() request: CreateProductRequestDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ): Promise<any> {
+    const productPhotosDto = files.map((file) => ({ filename: file.filename }));
+    const createProduct = plainToClass(CreateProductRequestDto, {
+      ...request,
+      product_photos: productPhotosDto,
+    });
 
-  @Get()
-  findAll() {
-    return this.productService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+    return this.productService.createProductService(createProduct);
   }
 }

@@ -29,16 +29,18 @@ export class Products {
   product_code: string;
 
   @Column({
-    type: 'int',
+    type: 'varchar',
     nullable: false,
+    length: 100,
   })
-  product_stock: number;
+  product_stock: string;
 
   @Column({
-    type: 'int',
+    type: 'varchar',
     nullable: false,
+    length: 100,
   })
-  product_price: number;
+  product_price: string;
 
   @Column({
     type: 'text',
@@ -56,7 +58,7 @@ export class Products {
     type: 'json',
     nullable: false,
   })
-  product_photos: { filename: string }[];
+  product_photos: string[];
 
   @Column({
     type: 'enum',
