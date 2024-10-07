@@ -4,7 +4,11 @@ export const imageFileFilter = (req: any, file: any, callback: any) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
     return callback(
       new HttpException(
-        'Only jpg, jpeg, or png files are allowed!',
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          error: 'Bad Request',
+          message: 'Only jpg, jpeg, or png files are allowed!',
+        },
         HttpStatus.BAD_REQUEST,
       ),
       false,
@@ -13,7 +17,14 @@ export const imageFileFilter = (req: any, file: any, callback: any) => {
 
   if (file.size > 1024 * 1024 * 2) {
     return callback(
-      new HttpException('File is too large!', HttpStatus.BAD_REQUEST),
+      new HttpException(
+        {
+          statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+          error: 'Payload Too Large',
+          message: 'File size is too large!',
+        },
+        HttpStatus.PAYLOAD_TOO_LARGE,
+      ),
       false,
     );
   }

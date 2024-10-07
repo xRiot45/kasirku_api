@@ -58,7 +58,7 @@ export class Products {
     type: 'json',
     nullable: false,
   })
-  product_photos: string[];
+  product_photos: { filename: string }[];
 
   @Column({
     type: 'enum',

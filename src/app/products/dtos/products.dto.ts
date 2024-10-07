@@ -9,6 +9,7 @@ import {
 
 class ProductVariantDto {
   @IsString()
+  @IsNotEmpty()
   variant: string;
 }
 
@@ -43,14 +44,27 @@ export class CreateProductRequestDto {
 
   @IsArray()
   @Type(() => ProductVariantDto)
-  @IsNotEmpty()
   readonly product_variants: ProductVariantDto[];
 
-  // @IsArray()
-  // @IsNotEmpty()
-  readonly product_photos: string[];
+  @Type(() => ProductPhotoDto)
+  readonly product_photos: ProductPhotoDto[];
 
   @IsString()
   @IsNotEmpty()
   readonly productCategoryId: string;
+}
+
+export class ProductResponseDto {
+  readonly id: string;
+  readonly product_name: string;
+  readonly product_code: string;
+  readonly product_stock: string;
+  readonly product_price: string;
+  readonly product_description: string;
+  readonly product_variants: ProductVariantDto[];
+  readonly product_photos: ProductPhotoDto[];
+  readonly product_category: {
+    readonly id: string;
+    readonly product_category_name: string;
+  };
 }

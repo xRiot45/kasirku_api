@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IProductsRepository } from './interfaces/products.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
-import { CreateProductRequestDto } from './dtos/products.dto';
+import {
+  CreateProductRequestDto,
+  ProductResponseDto,
+} from './dtos/products.dto';
 import { generateProductCode } from 'src/common/utils/productCode.util';
 import { Products } from './entities/products.entity';
 
@@ -15,7 +18,9 @@ export class ProductService {
     private readonly logger: Logger,
   ) {}
 
-  async createProductService(request: CreateProductRequestDto): Promise<any> {
+  async createProductService(
+    request: CreateProductRequestDto,
+  ): Promise<IBaseResponse<ProductResponseDto>> {
     const {
       product_name,
       product_stock,
@@ -55,11 +60,11 @@ export class ProductService {
       }
 
       const productCode = generateProductCode();
-      let photoProductPaths = [];
-
-      // Ensure product_photos is an array and map the filenames correctly
-      if (product_photos && Array.isArray(product_photos)) {
-        photoProductPaths = product_photos.map((photo) => `uploads/${photo}`);
+      const photoProductPaths = [];
+      if (product_photos) {
+        for (const photo of product_photos) {
+          photoProductPaths.push(`uploads/${photo.filename}`);
+        }
       }
 
       const payload = {
@@ -75,8 +80,6 @@ export class ProductService {
 
       const product = new Products(payload);
       const createProduct = await this.productRepository.createProduct(product);
-
-      console.log(createProduct);
 
       return {
         statusCode: HttpStatus.CREATED,
