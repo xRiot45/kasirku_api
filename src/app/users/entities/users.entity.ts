@@ -97,7 +97,6 @@ export class Users {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
-  role: any;
 
   constructor(partial: Partial<Users>) {
     Object.assign(this, partial);
