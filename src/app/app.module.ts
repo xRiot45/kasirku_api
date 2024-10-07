@@ -6,7 +6,13 @@ import { ProductCategoryModule } from './product_category/product_category.modul
 import { ProductModule } from './product/product.module';
 
 @Module({
-  imports: [RoleModule, UsersModule, AuthModule, ProductCategoryModule, ProductModule],
+  imports: [
+    RoleModule,
+    UsersModule,
+    AuthModule,
+    ProductCategoryModule,
+    ProductModule,
+  ],
   providers: [],
 })
 export class AppModule {}

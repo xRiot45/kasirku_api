@@ -33,4 +33,15 @@ export interface IUsersRepository {
   ): Promise<Users[]>;
   findById(id: string): Promise<Users>;
   delete(id: string): Promise<DeleteResult>;
+  findByFullName(full_name: string): Promise<Users>;
+  updateProfile(
+    userId: string,
+    full_name: string,
+    birthday_date: Date,
+    place_of_birth: string,
+    phone_number: string,
+    gender: GenderType,
+    address: string,
+    photo: string,
+  ): Promise<any>;
 }

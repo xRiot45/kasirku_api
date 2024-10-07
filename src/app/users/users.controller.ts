@@ -4,9 +4,12 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Put,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -15,8 +18,13 @@ import {
   DeleteUserRequestDto,
   GetUserResponse,
   SearchUsersDto,
+  UpdateProfileRequestDto,
 } from './dtos/users.dto';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { imageFileFilter, imageFileName } from 'src/common/utils/fileUploads';
+import { diskStorage } from 'multer';
+import { Users } from './entities/users.entity';
 
 @Controller('/api/users')
 export class UsersController {
@@ -90,5 +98,31 @@ export class UsersController {
     @Body() request: DeleteUserRequestDto,
   ): Promise<WebResponse> {
     return this.usersService.deleteUserService(id, request);
+  }
+
+  @Patch('/update-profile')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: imageFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async updateUserController(
+    @AuthDecorator() authenticatedUser: Users,
+    @Body() request: UpdateProfileRequestDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ): Promise<IBaseResponse<GetUserResponse>> {
+    const updateProfile = {
+      ...request,
+      photo: files.find((file) => file.fieldname === 'photo'),
+    };
+    return this.usersService.updateProfileService(
+      authenticatedUser.id,
+      updateProfile,
+    );
   }
 }

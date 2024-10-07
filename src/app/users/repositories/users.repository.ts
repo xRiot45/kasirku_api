@@ -171,4 +171,36 @@ export class UsersRepository implements IUsersRepository {
   async delete(id: string): Promise<DeleteResult> {
     return this.usersRepository.delete(id);
   }
+
+  async findByFullName(full_name: string): Promise<Users> {
+    return this.usersRepository.findOne({
+      where: { full_name },
+    });
+  }
+
+  async updateProfile(
+    userId: string,
+    full_name: string,
+    birthday_date: Date,
+    place_of_birth: string,
+    phone_number: string,
+    gender: GenderType,
+    address: string,
+    photo: string,
+  ) {
+    await this.usersRepository.update(userId, {
+      full_name,
+      birthday_date,
+      place_of_birth,
+      phone_number,
+      gender,
+      address,
+      photo,
+    });
+
+    return this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['roleId'],
+    });
+  }
 }

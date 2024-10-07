@@ -1,4 +1,6 @@
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
+import { join } from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -24,6 +26,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.use('/uploads', express.static(join(__dirname, '..', './uploads')));
 
   app.useLogger(logger);
   app.use(cookieParser());
