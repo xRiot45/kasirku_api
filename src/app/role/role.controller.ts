@@ -27,8 +27,13 @@ export class RoleController {
 
   @Get('/all')
   @UseGuards(AdminGuard, AuthGuard)
-  async findAllRoleController(): Promise<IBaseResponse<RoleResponseDto[]>> {
-    return this.roleService.findAllRoleService();
+  async findAllRoleController(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ): Promise<IBaseResponse<RoleResponseDto[]>> {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.roleService.findAllRoleService(pageNumber, limitNumber);
   }
 
   @Get('/show/:id')
