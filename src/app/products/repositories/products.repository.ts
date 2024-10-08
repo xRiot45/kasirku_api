@@ -41,4 +41,17 @@ export class ProductsRepository implements IProductsRepository {
       where: { id },
     });
   }
+
+  async findAllProduct(skip: number, take: number): Promise<Products[]> {
+    return this.productsRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['productCategoryId'],
+      skip,
+      take,
+    });
+  }
+
+  async countProducts(): Promise<number> {
+    return await this.productsRepository.count();
+  }
 }

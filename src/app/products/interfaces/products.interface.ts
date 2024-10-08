@@ -8,4 +8,6 @@ export interface IProductsRepository {
   findProductCategoryId(id: string): Promise<ProductCategory | undefined>;
   deleteProduct(id: string): Promise<DeleteResult>;
   findById(id: string): Promise<Products | undefined>;
+  findAllProduct(skip: number, take: number): Promise<Products[]>;
+  countProducts(): Promise<number>;
 }

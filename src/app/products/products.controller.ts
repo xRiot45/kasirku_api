@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -47,6 +49,17 @@ export class ProductController {
     });
 
     return this.productService.createProductService(createProduct);
+  }
+
+  @Get('/all')
+  @UseGuards(AdminGuard, AuthGuard)
+  async findAllProductController(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ): Promise<IBaseResponse<ProductResponseDto[]>> {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.productService.findAllProductService(pageNumber, limitNumber);
   }
 
   @Delete('/delete/:id')
