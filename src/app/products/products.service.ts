@@ -11,6 +11,7 @@ import {
 } from './dtos/products.dto';
 import { Products } from './entities/products.entity';
 import { IProductsRepository } from './interfaces/products.interface';
+import { ProductStatusType } from 'src/common/enums/product-status.enum';
 
 @Injectable()
 export class ProductService {
@@ -242,6 +243,103 @@ export class ProductService {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Internal Server Error',
           message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async searchProductService(
+    page: number = 1,
+    limit: number = 10,
+    product_name: string,
+    product_stock: string,
+    product_price: string,
+    product_code: string,
+    product_status: ProductStatusType,
+    product_category_name: string,
+  ): Promise<IBaseResponse<ProductResponseDto[]>> {
+    try {
+      const skip = (page - 1) * limit;
+      const totalProducts = await this.productRepository.countFilteredProducts(
+        product_name,
+        product_stock,
+        product_price,
+        product_code,
+        product_status,
+        product_category_name,
+      );
+
+      const totalPages = Math.ceil(totalProducts / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const previousPage = hasPreviousPage ? page - 1 : null;
+
+      const products = await this.productRepository.searchProducts(
+        skip,
+        limit,
+        product_name,
+        product_stock,
+        product_price,
+        product_code,
+        product_status,
+        product_category_name,
+      );
+
+      if (products.length === 0) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const result: ProductResponseDto[] = products.map((product) => ({
+        id: product.id,
+        product_name: product.product_name,
+        product_code: product.product_code,
+        product_stock: Number(product.product_stock),
+        product_price: Number(product.product_price),
+        product_description: product.product_description,
+        product_variants: product.product_variants,
+        product_photos: product.product_photos,
+        product_status: product.product_status,
+        product_category: {
+          id: product.productCategoryId.id,
+          product_category_name:
+            product.productCategoryId.product_category_name,
+        },
+      }));
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Search products successfully',
+        data: result,
+        totalItems: totalProducts,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage,
+        previousPage,
+      };
+    } catch (error) {
+      this.logger.error(`Error search product: ${error.message}`);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      this.logger.error(`Error search product: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

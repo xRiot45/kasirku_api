@@ -20,6 +20,7 @@ import { imageFileFilter, imageFileName } from 'src/common/utils/fileUploads';
 import {
   CreateProductRequestDto,
   ProductResponseDto,
+  SearchProductDto,
   UpdateProductRequestDto,
 } from './dtos/products.dto';
 import { ProductService } from './products.service';
@@ -70,6 +71,37 @@ export class ProductController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<ProductResponseDto>> {
     return this.productService.findProductByIdService(id);
+  }
+
+  @Get('/search')
+  @UseGuards(AuthGuard)
+  async searchProductController(
+    @Query() query: SearchProductDto,
+  ): Promise<IBaseResponse<ProductResponseDto[]>> {
+    const {
+      page,
+      limit,
+      product_name,
+      product_stock,
+      product_price,
+      product_code,
+      product_status,
+      product_category_name,
+    } = query;
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    return this.productService.searchProductService(
+      pageNumber,
+      limitNumber,
+      product_name,
+      product_stock,
+      product_price,
+      product_code,
+      product_status,
+      product_category_name,
+    );
   }
 
   @Put('/update/:id')

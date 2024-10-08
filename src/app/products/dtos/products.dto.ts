@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
+  IsNumberString,
   IsOptional,
   IsString,
   MaxLength,
@@ -95,6 +96,40 @@ export class UpdateProductRequestDto {
   @IsString()
   @IsOptional()
   readonly productCategoryId: string;
+}
+
+export class SearchProductDto {
+  @IsOptional()
+  @IsNumberString()
+  readonly page: string = '1';
+
+  @IsOptional()
+  @IsNumberString()
+  readonly limit: string = '10';
+
+  @IsOptional()
+  @IsString()
+  readonly product_name?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly product_stock?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly product_price?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly product_code?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly product_status?: ProductStatusType;
+
+  @IsOptional()
+  @IsString()
+  readonly product_category_name?: string;
 }
 
 export class ProductResponseDto {

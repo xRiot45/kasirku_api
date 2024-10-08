@@ -4,6 +4,7 @@ import { ProductCategory } from 'src/app/product_category/entities/product_categ
 import { DeleteResult, Repository } from 'typeorm';
 import { Products } from '../entities/products.entity';
 import { IProductsRepository } from '../interfaces/products.interface';
+import { ProductStatusType } from 'src/common/enums/product-status.enum';
 
 @Injectable()
 export class ProductsRepository implements IProductsRepository {
@@ -63,5 +64,117 @@ export class ProductsRepository implements IProductsRepository {
       where: { id: id },
       relations: ['productCategoryId'],
     });
+  }
+
+  async countFilteredProducts(
+    product_name: string,
+    product_stock: string,
+    product_price: string,
+    product_code: string,
+    product_status: ProductStatusType,
+    product_category_name: string,
+  ): Promise<number> {
+    const query = this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productCategoryId', 'productCategory');
+
+    if (product_name) {
+      query.andWhere('product.product_name LIKE :product_name', {
+        product_name: `%${product_name}%`,
+      });
+    }
+
+    if (product_stock) {
+      query.andWhere('product.product_stock LIKE :product_stock', {
+        product_stock: `%${product_stock}%`,
+      });
+    }
+
+    if (product_price) {
+      query.andWhere('product.product_price LIKE :product_price', {
+        product_price: `%${product_price}%`,
+      });
+    }
+
+    if (product_code) {
+      query.andWhere('product.product_code LIKE :product_code', {
+        product_code: `%${product_code}%`,
+      });
+    }
+
+    if (product_status) {
+      query.andWhere('product.product_status LIKE :product_status', {
+        product_status: `%${product_status}%`,
+      });
+    }
+
+    if (product_category_name) {
+      query.andWhere(
+        'productCategory.product_category_name LIKE :product_category_name',
+        {
+          product_category_name: `%${product_category_name}%`,
+        },
+      );
+    }
+
+    return query.getCount();
+  }
+
+  async searchProducts(
+    skip: number,
+    take: number,
+    product_name: string,
+    product_stock: string,
+    product_price: string,
+    product_code: string,
+    product_status: ProductStatusType,
+    product_category_name: string,
+  ): Promise<Products[]> {
+    const query = this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.productCategoryId', 'productCategory')
+      .skip(skip)
+      .take(take);
+
+    if (product_name) {
+      query.where('product.product_name LIKE :product_name', {
+        product_name: `%${product_name}%`,
+      });
+    }
+
+    if (product_stock) {
+      query.where('product.product_stock LIKE :product_stock', {
+        product_stock: `%${product_stock}%`,
+      });
+    }
+
+    if (product_price) {
+      query.where('product.product_price LIKE :product_price', {
+        product_price: `%${product_price}%`,
+      });
+    }
+
+    if (product_code) {
+      query.where('product.product_code LIKE :product_code', {
+        product_code: `%${product_code}%`,
+      });
+    }
+
+    if (product_status) {
+      query.where('product.product_status LIKE :product_status', {
+        product_status: `%${product_status}%`,
+      });
+    }
+
+    if (product_category_name) {
+      query.where(
+        'productCategory.product_category_name LIKE :product_category_name',
+        {
+          product_category_name: `%${product_category_name}%`,
+        },
+      );
+    }
+
+    return query.getMany();
   }
 }
