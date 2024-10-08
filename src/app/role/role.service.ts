@@ -114,10 +114,10 @@ export class RoleService {
   }
 
   async findRoleByIdService(
-    roleId: string,
+    id: string,
   ): Promise<IBaseResponse<RoleResponseDto>> {
     try {
-      const role = await this.roleRepository.findById(roleId);
+      const role = await this.roleRepository.findById(id);
       if (!role) {
         throw new HttpException(
           {
