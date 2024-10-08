@@ -2,6 +2,6 @@
   "editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairsHorizontal": true,
   "editor.guides.bracketPairs": false,
-  "editor.bracketPairColorization.independentColorPoolPerBracketType": false,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
   "editor.guides.highlightActiveBracketPair": true
 }
