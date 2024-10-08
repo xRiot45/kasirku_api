@@ -89,10 +89,15 @@ export class ProductController {
     @Body() request: UpdateProductRequestDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<IBaseResponse<ProductResponseDto>> {
-    const productPhotosDto = files.map((file) => ({ filename: file.filename }));
+    // Cek apakah ada file yang diunggah
+    const productPhotos =
+      files && files.length > 0
+        ? files.map((file) => ({ filename: file.filename }))
+        : [];
+
     const updateProduct = plainToClass(UpdateProductRequestDto, {
       ...request,
-      product_photos: productPhotosDto,
+      product_photos: productPhotos.length > 0 ? productPhotos : undefined,
     });
 
     return this.productService.updateProductService(id, updateProduct);

@@ -86,7 +86,7 @@ export class UpdateProductRequestDto {
   @IsArray()
   @Type(() => ProductVariantDto)
   @IsOptional()
-  readonly product_variants: ProductVariantDto[];
+  readonly product_variants: string[];
 
   @Type(() => ProductPhotoDto)
   @IsOptional()

@@ -64,9 +64,9 @@ export class ProductService {
 
       const productCode = generateProductCode();
       const productVariantsPaths = [];
-      const photoProductPaths = [];
+      const productPhotosPaths = [];
 
-      if (product_variants) {
+      if (product_variants && Array.isArray(product_variants)) {
         for (const variant of product_variants) {
           productVariantsPaths.push({
             variant: variant,
@@ -74,9 +74,9 @@ export class ProductService {
         }
       }
 
-      if (product_photos) {
+      if (product_photos && Array.isArray(product_photos)) {
         for (const photo of product_photos) {
-          photoProductPaths.push({ filename: `uploads/${photo.filename}` });
+          productPhotosPaths.push({ filename: `uploads/${photo.filename}` });
         }
       }
 
@@ -87,7 +87,7 @@ export class ProductService {
         product_code: productCode,
         product_description,
         product_variants: productVariantsPaths,
-        product_photos: photoProductPaths,
+        product_photos: productPhotosPaths,
         productCategoryId: productCategory,
       };
 
@@ -262,11 +262,22 @@ export class ProductService {
       product_status,
       productCategoryId,
     } = request;
+
     try {
       const findProduct = await this.productRepository.findById(id);
+      if (!findProduct) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
       const productNameExist =
         await this.productRepository.findProductName(product_name);
-
       if (productNameExist && productNameExist.id !== id) {
         throw new HttpException(
           {
@@ -280,7 +291,6 @@ export class ProductService {
 
       const productCategory =
         await this.productRepository.findProductCategoryId(productCategoryId);
-
       if (!productCategory) {
         throw new HttpException(
           {
@@ -293,29 +303,35 @@ export class ProductService {
       }
 
       const productCode = generateProductCode();
-      const photoProductPaths = findProduct.product_photos;
-      if (product_photos) {
-        for (const photo of product_photos) {
-          photoProductPaths.push({ filename: `uploads/${photo.filename}` });
-        }
-      }
 
-      const payload = {
+      // Prepare update payload
+      const payload: Partial<Products> = {
         product_name,
         product_stock,
         product_price,
         product_code: productCode,
         product_description,
-        product_variants,
-        product_photos: photoProductPaths,
         product_status,
         productCategoryId: productCategory,
       };
 
-      const product = new Products(payload);
+      // Update product_variants if provided
+      if (product_variants && Array.isArray(product_variants)) {
+        payload.product_variants = product_variants.map((variant) => ({
+          variant: variant,
+        }));
+      }
+
+      // Update product_photos if provided
+      if (product_photos && Array.isArray(product_photos)) {
+        payload.product_photos = product_photos.map((photo) => ({
+          filename: `uploads/${photo.filename}`,
+        }));
+      }
+
       const updatedProduct = await this.productRepository.updateProduct(
         id,
-        product,
+        payload as Products,
       );
 
       return {
