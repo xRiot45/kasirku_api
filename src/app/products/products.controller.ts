@@ -62,6 +62,14 @@ export class ProductController {
     return this.productService.findAllProductService(pageNumber, limitNumber);
   }
 
+  @Get('/show/:id')
+  @UseGuards(AdminGuard, AuthGuard)
+  async findProductByIdController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<ProductResponseDto>> {
+    return this.productService.findProductByIdService(id);
+  }
+
   @Delete('/delete/:id')
   @UseGuards(AuthGuard, AdminGuard)
   async deleteProductController(@Param('id') id: string): Promise<WebResponse> {

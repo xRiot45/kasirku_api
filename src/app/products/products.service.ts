@@ -181,6 +181,62 @@ export class ProductService {
     }
   }
 
+  async findProductByIdService(
+    id: string,
+  ): Promise<IBaseResponse<ProductResponseDto>> {
+    try {
+      const product = await this.productRepository.findById(id);
+      if (!product) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product Not Found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      console.log(product);
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find product by ID successfully',
+        data: {
+          id: product.id,
+          product_name: product.product_name,
+          product_code: product.product_code,
+          product_stock: Number(product.product_stock),
+          product_price: Number(product.product_price),
+          product_description: product.product_description,
+          product_variants: product.product_variants,
+          product_photos: product.product_photos,
+          product_status: product.product_status,
+          product_category: {
+            id: product.productCategoryId.id,
+            product_category_name:
+              product.productCategoryId.product_category_name,
+          },
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find product by id: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find product by id: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async deleteProductService(id: string): Promise<WebResponse> {
     try {
       const product = await this.productRepository.findById(id);

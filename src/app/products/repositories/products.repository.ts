@@ -39,6 +39,7 @@ export class ProductsRepository implements IProductsRepository {
   async findById(id: string): Promise<Products | undefined> {
     return await this.productsRepository.findOne({
       where: { id },
+      relations: ['productCategoryId'],
     });
   }
 
