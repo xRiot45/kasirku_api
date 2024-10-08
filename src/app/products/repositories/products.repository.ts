@@ -55,4 +55,13 @@ export class ProductsRepository implements IProductsRepository {
   async countProducts(): Promise<number> {
     return await this.productsRepository.count();
   }
+
+  async updateProduct(id: string, data: Products): Promise<Products> {
+    await this.productsRepository.update(id, data);
+
+    return this.productsRepository.findOne({
+      where: { id: id },
+      relations: ['productCategoryId'],
+    });
+  }
 }

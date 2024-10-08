@@ -10,4 +10,5 @@ export interface IProductsRepository {
   findById(id: string): Promise<Products | undefined>;
   findAllProduct(skip: number, take: number): Promise<Products[]>;
   countProducts(): Promise<number>;
+  updateProduct(id: string, data: Products): Promise<Products>;
 }

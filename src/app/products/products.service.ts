@@ -7,6 +7,7 @@ import { Logger } from 'winston';
 import {
   CreateProductRequestDto,
   ProductResponseDto,
+  UpdateProductRequestDto,
 } from './dtos/products.dto';
 import { Products } from './entities/products.entity';
 import { IProductsRepository } from './interfaces/products.interface';
@@ -231,6 +232,114 @@ export class ProductService {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Internal Server Error',
           message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateProductService(
+    id: string,
+    request: UpdateProductRequestDto,
+  ): Promise<IBaseResponse<ProductResponseDto>> {
+    const {
+      product_name,
+      product_price,
+      product_stock,
+      product_description,
+      product_variants,
+      product_photos,
+      product_status,
+      productCategoryId,
+    } = request;
+    try {
+      const findProduct = await this.productRepository.findById(id);
+      const productNameExist =
+        await this.productRepository.findProductName(product_name);
+
+      if (productNameExist && productNameExist.id !== id) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.CONFLICT,
+            error: 'Conflict',
+            message: 'Product already exists',
+          },
+          HttpStatus.CONFLICT,
+        );
+      }
+
+      const productCategory =
+        await this.productRepository.findProductCategoryId(productCategoryId);
+
+      if (!productCategory) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product category Not Found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const productCode = generateProductCode();
+      const photoProductPaths = findProduct.product_photos;
+      if (product_photos) {
+        for (const photo of product_photos) {
+          photoProductPaths.push({ filename: `uploads/${photo.filename}` });
+        }
+      }
+
+      const payload = {
+        product_name,
+        product_stock,
+        product_price,
+        product_code: productCode,
+        product_description,
+        product_variants,
+        product_photos: photoProductPaths,
+        product_status,
+        productCategoryId: productCategory,
+      };
+
+      const product = new Products(payload);
+      const updatedProduct = await this.productRepository.updateProduct(
+        id,
+        product,
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Product updated successfully',
+        data: {
+          id: updatedProduct.id,
+          product_name: updatedProduct.product_name,
+          product_code: updatedProduct.product_code,
+          product_stock: Number(updatedProduct.product_stock),
+          product_price: Number(updatedProduct.product_price),
+          product_description: updatedProduct.product_description,
+          product_variants: updatedProduct.product_variants,
+          product_photos: updatedProduct.product_photos,
+          product_status: updatedProduct.product_status,
+          product_category: {
+            id: updatedProduct.productCategoryId.id,
+            product_category_name:
+              updatedProduct.productCategoryId.product_category_name,
+          },
+        },
+      };
+    } catch (error) {
+      this.logger.error(`Error update product: ${error.message}`);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      this.logger.error(`Error update product: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

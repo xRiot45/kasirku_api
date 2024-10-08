@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -52,6 +53,47 @@ export class CreateProductRequestDto {
 
   @IsString()
   @IsNotEmpty()
+  readonly productCategoryId: string;
+}
+
+export class UpdateProductRequestDto {
+  @IsString()
+  @MinLength(1, {
+    message: 'The product name must be at least 1 character long',
+  })
+  @MaxLength(255, {
+    message: 'The product name must be at most 255 characters long',
+  })
+  @IsOptional()
+  readonly product_name: string;
+
+  @IsString()
+  @IsOptional()
+  readonly product_stock: string;
+
+  @IsString()
+  @IsOptional()
+  readonly product_price: string;
+
+  @IsString()
+  @IsOptional()
+  readonly product_description: string;
+
+  @IsString()
+  @IsOptional()
+  readonly product_status: ProductStatusType;
+
+  @IsArray()
+  @Type(() => ProductVariantDto)
+  @IsOptional()
+  readonly product_variants: ProductVariantDto[];
+
+  @Type(() => ProductPhotoDto)
+  @IsOptional()
+  readonly product_photos: ProductPhotoDto[];
+
+  @IsString()
+  @IsOptional()
   readonly productCategoryId: string;
 }
 

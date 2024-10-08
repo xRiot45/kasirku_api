@@ -410,7 +410,7 @@ export class UsersService {
       photo,
     } = request;
     try {
-      const userProfile = this.usersRepository.findById(userId);
+      const userProfile = await this.usersRepository.findById(userId);
       const fullNameExist =
         await this.usersRepository.findByFullName(full_name);
 
@@ -425,7 +425,7 @@ export class UsersService {
         );
       }
 
-      let photoPath = (await userProfile).photo;
+      let photoPath = userProfile.photo;
       if (photo && typeof photo === 'object') {
         photoPath = `uploads/${(photo as { filename: string } | null)?.filename}`;
       }
