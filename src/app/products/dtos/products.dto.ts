@@ -59,8 +59,8 @@ export class ProductResponseDto {
   readonly id: string;
   readonly product_name: string;
   readonly product_code: string;
-  readonly product_stock: string;
-  readonly product_price: string;
+  readonly product_stock: number;
+  readonly product_price: number;
   readonly product_description: string;
   readonly product_variants: ProductVariantDto[];
   readonly product_photos: ProductPhotoDto[];
