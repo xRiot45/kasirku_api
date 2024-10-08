@@ -63,10 +63,20 @@ export class ProductService {
       }
 
       const productCode = generateProductCode();
+      const productVariantsPaths = [];
       const photoProductPaths = [];
+
+      if (product_variants) {
+        for (const variant of product_variants) {
+          productVariantsPaths.push({
+            variant: variant,
+          });
+        }
+      }
+
       if (product_photos) {
         for (const photo of product_photos) {
-          photoProductPaths.push(`uploads/${photo.filename}`);
+          photoProductPaths.push({ filename: `uploads/${photo.filename}` });
         }
       }
 
@@ -76,7 +86,7 @@ export class ProductService {
         product_price,
         product_code: productCode,
         product_description,
-        product_variants,
+        product_variants: productVariantsPaths,
         product_photos: photoProductPaths,
         productCategoryId: productCategory,
       };
