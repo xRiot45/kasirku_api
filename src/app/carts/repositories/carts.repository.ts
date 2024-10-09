@@ -15,7 +15,6 @@ export class CartsRepository implements ICartsRepository {
   ) {}
 
   async addProductToCart(data: Carts): Promise<Carts> {
-    // console.log(data);
     return await this.cartsRepository.save(data);
   }
 
@@ -23,6 +22,13 @@ export class CartsRepository implements ICartsRepository {
     return await this.productsRepository.findOne({
       where: { id },
       relations: ['productCategoryId'],
+    });
+  }
+
+  async findAllProductsInCart(): Promise<Carts[]> {
+    return await this.cartsRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['productId', 'productId.productCategoryId'],
     });
   }
 }

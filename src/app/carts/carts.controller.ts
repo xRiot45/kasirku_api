@@ -1,5 +1,5 @@
 import { CashierGuard } from './../../common/guards/cashier.guard';
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { CartsRequestDto } from './dtos/carts.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -12,5 +12,11 @@ export class CartsController {
   @UseGuards(CashierGuard, AuthGuard)
   async addProductToCartController(@Body() request: CartsRequestDto) {
     return this.cartsService.addProductToCartService(request);
+  }
+
+  @Get('/all')
+  @UseGuards(CashierGuard, AuthGuard)
+  async findAllProductsInCartController() {
+    return this.cartsService.findAllProductsInCartService();
   }
 }

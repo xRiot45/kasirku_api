@@ -66,7 +66,6 @@ export class CartsService {
 
       const cart = new Carts(payload);
       const addProduct = await this.cartsRepository.addProductToCart(cart);
-      console.log(addProduct);
 
       return {
         statusCode: HttpStatus.CREATED,
@@ -95,6 +94,60 @@ export class CartsService {
       }
 
       this.logger.error(`Error add product to cart: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findAllProductsInCartService(): Promise<
+    IBaseResponse<CartsResponseDto[]>
+  > {
+    try {
+      const carts = await this.cartsRepository.findAllProductsInCart();
+      if (!carts) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Carts Is Empty',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find all products in cart successfully',
+        data: carts.map((cart) => ({
+          id: cart.id,
+          product: {
+            id: cart.productId.id,
+            product_name: cart.productId.product_name,
+            product_code: cart.productId.product_code,
+            product_price: Number(cart.productId.product_price),
+            product_category: {
+              id: cart.productId.productCategoryId.id,
+              product_category_name:
+                cart.productId.productCategoryId.product_category_name,
+            },
+          },
+          selected_variant: cart.selected_variant,
+          quantity: cart.quantity,
+        })),
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find all products in cart: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find all products in cart: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

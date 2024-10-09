@@ -4,4 +4,5 @@ import { Carts } from '../entities/carts.entity';
 export interface ICartsRepository {
   addProductToCart(data: Carts): Promise<Carts>;
   findProductById(id: string): Promise<Products>;
+  findAllProductsInCart(): Promise<Carts[]>;
 }
