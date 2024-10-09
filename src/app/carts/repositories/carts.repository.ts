@@ -42,4 +42,15 @@ export class CartsRepository implements ICartsRepository {
       relations: ['productId', 'productId.productCategoryId'],
     });
   }
+
+  async deleteAllCarts(): Promise<void> {
+    return await this.cartsRepository.clear();
+  }
+
+  async findAllCarts(): Promise<Carts[]> {
+    return await this.cartsRepository.find({
+      order: { createdAt: 'DESC' },
+      relations: ['productId', 'productId.productCategoryId'],
+    });
+  }
 }

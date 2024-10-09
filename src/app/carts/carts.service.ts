@@ -59,7 +59,7 @@ export class CartsService {
 
       const payload = {
         productId: product,
-        selectedVariant: productVariant.variant,
+        selected_variant: productVariant.variant,
         quantity,
       };
 
@@ -160,13 +160,13 @@ export class CartsService {
 
   async deleteCartByIdService(id: string): Promise<WebResponse> {
     try {
-      const product = await this.cartsRepository.findCartById(id);
-      if (!product) {
+      const cart = await this.cartsRepository.findCartById(id);
+      if (!cart) {
         throw new HttpException(
           {
             statusCode: HttpStatus.NOT_FOUND,
             error: 'Not Found',
-            message: 'Product not found',
+            message: 'Cart not found',
           },
           HttpStatus.NOT_FOUND,
         );
@@ -184,6 +184,45 @@ export class CartsService {
       }
 
       this.logger.error(`Error find delete product in cart: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteAllCartsService(): Promise<WebResponse> {
+    try {
+      const carts = await this.cartsRepository.findAllCarts();
+      if (!carts || carts.length === 0) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Cart Is Empty',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.cartsRepository.deleteAllCarts();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'All products deleted from cart successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(
+          `Error delete all products in cart: ${error.message}`,
+        );
+        throw error;
+      }
+
+      this.logger.error(`Error delete all products in cart: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

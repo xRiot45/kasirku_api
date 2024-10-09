@@ -8,4 +8,6 @@ export interface ICartsRepository {
   findAllProductsInCart(): Promise<Carts[]>;
   deleteCartById(id: string): Promise<DeleteResult>;
   findProductById(id: string): Promise<Products>;
+  deleteAllCarts(): Promise<void>;
+  findAllCarts(): Promise<Carts[]>;
 }

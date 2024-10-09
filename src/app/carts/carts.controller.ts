@@ -32,6 +32,12 @@ export class CartsController {
     return this.cartsService.findAllProductsInCartService();
   }
 
+  @Delete('/delete/all')
+  @UseGuards(CashierGuard, AuthGuard)
+  async deleteAllCartsController(): Promise<WebResponse> {
+    return this.cartsService.deleteAllCartsService();
+  }
+
   @Delete('/delete/:id')
   @UseGuards(CashierGuard, AuthGuard)
   async deleteCartByIdController(
