@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class CashierGuard implements CanActivate {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER)
     private readonly logger: Logger,
@@ -50,7 +50,7 @@ export class AdminGuard implements CanActivate {
       secret: ACCESS_TOKEN_SECRET,
     });
 
-    if (decoded.role.role_name !== 'Admin') {
+    if (decoded.role.role_name !== 'Kasir') {
       this.logger.error('Invalid token, you do not have permission');
       throw new HttpException(
         {

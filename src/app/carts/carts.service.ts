@@ -1,26 +1,108 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCartDto } from './dtos/create-cart.dto';
-import { UpdateCartDto } from './dtos/update-cart.dto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+import { CartsRequestDto, CartsResponseDto } from './dtos/carts.dto';
+import { Carts } from './entities/carts.entity';
+import { ICartsRepository } from './interfaces/carts.interface';
 
 @Injectable()
 export class CartsService {
-  create(createCartDto: CreateCartDto) {
-    return 'This action adds a new cart';
-  }
+  constructor(
+    @Inject('ICartsRepository')
+    private readonly cartsRepository: ICartsRepository,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
+  ) {}
 
-  findAll() {
-    return `This action returns all carts`;
-  }
+  async addProductToCartService(
+    reqeust: CartsRequestDto,
+  ): Promise<IBaseResponse<CartsResponseDto>> {
+    const { productId, selected_variant, quantity } = reqeust;
+    try {
+      const product = await this.cartsRepository.findProductById(productId);
+      if (!product) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Fount',
+            message: 'Product Not Found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
-  }
+      const productQuantityCanNotBeZero = quantity <= 0;
+      if (productQuantityCanNotBeZero) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Fount',
+            message: 'Product Quantity Can Not Be Zero',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
-  }
+      const productVariant = product.product_variants.find(
+        (variant) => variant.variant === selected_variant,
+      );
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+      if (!productVariant) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Fount',
+            message: 'Product Variant Not Found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const payload = {
+        productId: product,
+        selected_variant: productVariant.variant,
+        quantity,
+      };
+
+      const cart = new Carts(payload);
+      const addProduct = await this.cartsRepository.addProductToCart(cart);
+      console.log(addProduct);
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Product Added To Cart',
+        data: {
+          id: addProduct.id,
+          product: {
+            id: addProduct.productId.id,
+            product_name: addProduct.productId.product_name,
+            product_code: addProduct.productId.product_code,
+            product_price: Number(addProduct.productId.product_price),
+            product_category: {
+              id: addProduct.productId.productCategoryId.id,
+              product_category_name:
+                addProduct.productId.productCategoryId.product_category_name,
+            },
+          },
+          selected_variant: addProduct.selected_variant,
+          quantity: addProduct.quantity,
+        },
+      };
+    } catch (error) {
+      this.logger.error(`Error add product to cart: ${error.message}`);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      this.logger.error(`Error add product to cart: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
