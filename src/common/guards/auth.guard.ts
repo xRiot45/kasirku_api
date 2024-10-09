@@ -58,7 +58,7 @@ export class AuthGuard implements CanActivate {
         {
           statusCode: HttpStatus.UNAUTHORIZED,
           error: 'Unauthorized',
-          message: 'Invalid token: ' + error.message,
+          message: error.message,
         },
         HttpStatus.UNAUTHORIZED,
       );
