@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductCategoryModule } from './product_category/product_category.module';
 import { ProductModule } from './products/products.module';
+import { CartsModule } from './carts/carts.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ProductModule } from './products/products.module';
     AuthModule,
     ProductCategoryModule,
     ProductModule,
+    CartsModule,
   ],
   providers: [],
 })

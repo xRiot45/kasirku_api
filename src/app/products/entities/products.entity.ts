@@ -1,3 +1,4 @@
+import { Carts } from 'src/app/carts/entities/carts.entity';
 import { ProductCategory } from 'src/app/product_category/entities/product_category.entity';
 import { ProductStatusType } from 'src/common/enums/product-status.enum';
 import {
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -67,12 +69,12 @@ export class Products {
   })
   product_status: ProductStatusType;
 
-  @ManyToOne(
-    () => ProductCategory,
-    (productCategory) => productCategory.product_category_name,
-  )
+  @ManyToOne(() => ProductCategory, (productCategory) => productCategory.id)
   @JoinColumn({ name: 'productCategoryId' })
   productCategoryId: ProductCategory;
+
+  @OneToMany(() => Carts, (carts) => carts.productId)
+  carts: Carts[];
 
   @CreateDateColumn({
     type: 'timestamp',

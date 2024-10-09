@@ -3,25 +3,33 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({ name: 'product_category' })
-export class ProductCategory {
+@Entity({ name: 'carts' })
+export class Carts {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @ManyToOne(() => Products, (products) => products.id)
+  @JoinColumn({ name: 'productId' })
+  productId: Products;
+
   @Column({
     type: 'varchar',
-    unique: true,
     nullable: false,
     length: 100,
   })
-  product_category_name: string;
+  selected_variant: string;
 
-  @OneToMany(() => Products, (products) => products.productCategoryId)
-  products: Products[];
+  @Column({
+    type: 'int',
+    nullable: false,
+    default: 1,
+  })
+  quantity: number;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -36,7 +44,7 @@ export class ProductCategory {
   })
   updatedAt: Date;
 
-  constructor(partial: Partial<ProductCategory>) {
+  constructor(partial: Partial<Carts>) {
     Object.assign(this, partial);
   }
 }
