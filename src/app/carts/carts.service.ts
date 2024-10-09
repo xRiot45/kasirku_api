@@ -87,7 +87,20 @@ export class CartsService {
         },
       };
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        this.logger.error(`Error add product in cart: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error add product in cart: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -134,6 +147,43 @@ export class CartsService {
       }
 
       this.logger.error(`Error find all products in cart: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteCartByIdService(id: string): Promise<WebResponse> {
+    try {
+      const product = await this.cartsRepository.findCartById(id);
+      if (!product) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Product not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.cartsRepository.deleteCartById(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Product deleted from cart successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error delete product in cart: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find delete product in cart: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

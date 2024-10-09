@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Products } from 'src/app/products/entities/products.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Carts } from '../entities/carts.entity';
 import { ICartsRepository } from '../interfaces/carts.interface';
 
@@ -28,6 +28,17 @@ export class CartsRepository implements ICartsRepository {
   async findAllProductsInCart(): Promise<Carts[]> {
     return await this.cartsRepository.find({
       order: { createdAt: 'DESC' },
+      relations: ['productId', 'productId.productCategoryId'],
+    });
+  }
+
+  async deleteCartById(id: string): Promise<DeleteResult> {
+    return await this.cartsRepository.delete(id);
+  }
+
+  async findCartById(id: string): Promise<Carts> {
+    return await this.cartsRepository.findOne({
+      where: { id },
       relations: ['productId', 'productId.productCategoryId'],
     });
   }
