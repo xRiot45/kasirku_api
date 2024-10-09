@@ -53,4 +53,22 @@ export class CartsRepository implements ICartsRepository {
       relations: ['productId', 'productId.productCategoryId'],
     });
   }
+
+  async findCartItemByProductIdAndVariant(
+    productId: string,
+    selected_variant: string,
+  ): Promise<Carts> {
+    return await this.cartsRepository.findOne({
+      where: { productId: { id: productId }, selected_variant },
+      relations: ['productId', 'productId.productCategoryId'],
+    });
+  }
+
+  async updateCartItem(id: string, updatedData: Carts): Promise<Carts> {
+    await this.cartsRepository.update(id, updatedData);
+    return await this.cartsRepository.findOne({
+      where: { id },
+      relations: ['productId', 'productId.productCategoryId'],
+    });
+  }
 }

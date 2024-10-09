@@ -57,35 +57,71 @@ export class CartsService {
         );
       }
 
-      const payload = {
-        productId: product,
-        selected_variant: productVariant.variant,
-        quantity,
-      };
+      const existingCartItem =
+        await this.cartsRepository.findCartItemByProductIdAndVariant(
+          productId,
+          selected_variant,
+        );
 
-      const cart = new Carts(payload);
-      const createdCart = await this.cartsRepository.addProductToCart(cart);
+      if (existingCartItem) {
+        existingCartItem.quantity += quantity;
+        await this.cartsRepository.updateCartItem(
+          existingCartItem.id,
+          existingCartItem,
+        );
 
-      return {
-        statusCode: HttpStatus.CREATED,
-        message: 'Product added to cart',
-        data: {
-          id: createdCart.id,
-          product: {
-            id: createdCart.productId.id,
-            product_name: createdCart.productId.product_name,
-            product_code: createdCart.productId.product_code,
-            product_price: Number(createdCart.productId.product_price),
-            product_category: {
-              id: createdCart.productId.productCategoryId.id,
-              product_category_name:
-                createdCart.productId.productCategoryId.product_category_name,
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Product updated in cart successfully',
+          data: {
+            id: existingCartItem.id,
+            product: {
+              id: existingCartItem.productId.id,
+              product_name: existingCartItem.productId.product_name,
+              product_code: existingCartItem.productId.product_code,
+              product_price: Number(existingCartItem.productId.product_price),
+              product_category: {
+                id: existingCartItem.productId.productCategoryId.id,
+                product_category_name:
+                  existingCartItem.productId.productCategoryId
+                    .product_category_name,
+              },
             },
+            selected_variant: existingCartItem.selected_variant,
+            quantity: existingCartItem.quantity,
           },
-          selected_variant: createdCart.selected_variant,
-          quantity: createdCart.quantity,
-        },
-      };
+        };
+      } else {
+        const payload = {
+          productId: product,
+          selected_variant: productVariant.variant,
+          quantity,
+        };
+
+        const cart = new Carts(payload);
+        const createdCart = await this.cartsRepository.addProductToCart(cart);
+
+        return {
+          statusCode: HttpStatus.CREATED,
+          message: 'Product added to cart',
+          data: {
+            id: createdCart.id,
+            product: {
+              id: createdCart.productId.id,
+              product_name: createdCart.productId.product_name,
+              product_code: createdCart.productId.product_code,
+              product_price: Number(createdCart.productId.product_price),
+              product_category: {
+                id: createdCart.productId.productCategoryId.id,
+                product_category_name:
+                  createdCart.productId.productCategoryId.product_category_name,
+              },
+            },
+            selected_variant: createdCart.selected_variant,
+            quantity: createdCart.quantity,
+          },
+        };
+      }
     } catch (error) {
       if (error instanceof HttpException) {
         this.logger.error(`Error add product in cart: ${error.message}`);

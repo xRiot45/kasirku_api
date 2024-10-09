@@ -10,4 +10,9 @@ export interface ICartsRepository {
   findProductById(id: string): Promise<Products>;
   deleteAllCarts(): Promise<void>;
   findAllCarts(): Promise<Carts[]>;
+  findCartItemByProductIdAndVariant(
+    productId: string,
+    selected_variant: string,
+  ): Promise<Carts>;
+  updateCartItem(id: string, updatedData: Carts): Promise<Carts>;
 }
