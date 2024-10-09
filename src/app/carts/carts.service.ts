@@ -15,31 +15,30 @@ export class CartsService {
   ) {}
 
   async addProductToCartService(
-    reqeust: CartsRequestDto,
+    request: CartsRequestDto,
   ): Promise<IBaseResponse<CartsResponseDto>> {
-    const { productId, selected_variant, quantity } = reqeust;
+    const { productId, selected_variant, quantity } = request;
     try {
       const product = await this.cartsRepository.findProductById(productId);
       if (!product) {
         throw new HttpException(
           {
             statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Fount',
-            message: 'Product Not Found',
+            error: 'Not Found',
+            message: 'Product not found',
           },
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const productQuantityCanNotBeZero = quantity <= 0;
-      if (productQuantityCanNotBeZero) {
+      if (quantity <= 0) {
         throw new HttpException(
           {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Fount',
-            message: 'Product Quantity Can Not Be Zero',
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Bad Request',
+            message: 'Quantity must be greater than zero',
           },
-          HttpStatus.NOT_FOUND,
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -51,8 +50,8 @@ export class CartsService {
         throw new HttpException(
           {
             statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Fount',
-            message: 'Product Variant Not Found',
+            error: 'Not Found',
+            message: 'Product variant not found',
           },
           HttpStatus.NOT_FOUND,
         );
@@ -60,48 +59,35 @@ export class CartsService {
 
       const payload = {
         productId: product,
-        selected_variant: productVariant.variant,
+        selectedVariant: productVariant.variant,
         quantity,
       };
 
       const cart = new Carts(payload);
-      const addProduct = await this.cartsRepository.addProductToCart(cart);
+      const createdCart = await this.cartsRepository.addProductToCart(cart);
 
       return {
         statusCode: HttpStatus.CREATED,
-        message: 'Product Added To Cart',
+        message: 'Product added to cart',
         data: {
-          id: addProduct.id,
+          id: createdCart.id,
           product: {
-            id: addProduct.productId.id,
-            product_name: addProduct.productId.product_name,
-            product_code: addProduct.productId.product_code,
-            product_price: Number(addProduct.productId.product_price),
+            id: createdCart.productId.id,
+            product_name: createdCart.productId.product_name,
+            product_code: createdCart.productId.product_code,
+            product_price: Number(createdCart.productId.product_price),
             product_category: {
-              id: addProduct.productId.productCategoryId.id,
+              id: createdCart.productId.productCategoryId.id,
               product_category_name:
-                addProduct.productId.productCategoryId.product_category_name,
+                createdCart.productId.productCategoryId.product_category_name,
             },
           },
-          selected_variant: addProduct.selected_variant,
-          quantity: addProduct.quantity,
+          selected_variant: createdCart.selected_variant,
+          quantity: createdCart.quantity,
         },
       };
     } catch (error) {
-      this.logger.error(`Error add product to cart: ${error.message}`);
-      if (error instanceof HttpException) {
-        throw error;
-      }
-
-      this.logger.error(`Error add product to cart: ${error.message}`);
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal Server Error',
-          message: 'Internal server error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw error;
     }
   }
 
