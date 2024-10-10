@@ -71,4 +71,8 @@ export class CartsRepository implements ICartsRepository {
       relations: ['productId', 'productId.productCategoryId'],
     });
   }
+
+  async clearCarts(): Promise<void> {
+    await this.cartsRepository.clear();
+  }
 }

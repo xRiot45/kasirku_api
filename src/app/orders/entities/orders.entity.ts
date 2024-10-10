@@ -38,37 +38,43 @@ export class Orders {
   })
   total_price: number;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  order_date: Date;
+  //   @Column({
+  //     type: 'int',
+  //     nullable: false,
+  //   })
+  //   total_order_price: number;
 
-  @Column({
-    type: 'int',
-    nullable: false,
-  })
-  payment_amount: number;
+  //   @CreateDateColumn({
+  //     type: 'timestamp',
+  //     default: () => 'CURRENT_TIMESTAMP(6)',
+  //   })
+  //   order_date: Date;
 
-  @Column({
-    type: 'int',
-    nullable: false,
-  })
-  change_returned: number;
+  //   @Column({
+  //     type: 'int',
+  //     nullable: false,
+  //   })
+  //   payment_amount: number;
 
-  @Column({
-    type: 'enum',
-    enum: OrderStatusType,
-    default: OrderStatusType.CREATED,
-  })
-  status_order: OrderStatusType;
+  //   @Column({
+  //     type: 'int',
+  //     nullable: false,
+  //   })
+  //   change_returned: number;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-    default: '-',
-  })
-  seat_number: string;
+  //   @Column({
+  //     type: 'enum',
+  //     enum: OrderStatusType,
+  //     default: OrderStatusType.CREATED,
+  //   })
+  //   status_order: OrderStatusType;
+
+  //   @Column({
+  //     type: 'varchar',
+  //     nullable: true,
+  //     default: '-',
+  //   })
+  //   seat_number: string;
 
   @CreateDateColumn({
     type: 'timestamp',

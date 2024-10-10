@@ -15,4 +15,5 @@ export interface ICartsRepository {
     selected_variant: string,
   ): Promise<Carts>;
   updateCartItem(id: string, updatedData: Carts): Promise<Carts>;
+  clearCarts(): Promise<void>;
 }
