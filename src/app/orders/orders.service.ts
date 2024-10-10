@@ -140,4 +140,58 @@ export class OrdersService {
       );
     }
   }
+
+  async findOrderById(id: string): Promise<IBaseResponse<OrdersReponseDto>> {
+    try {
+      const order = await this.ordersRepository.findOrderById(id);
+      if (!order) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Order not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find order by id successfully',
+        data: {
+          id: order.id,
+          product: {
+            id: order.productId.id,
+            product_name: order.productId.product_name,
+            product_code: order.productId.product_code,
+            product_price: Number(order.productId.product_price),
+            product_photos: order.productId.product_photos,
+            product_category: {
+              id: order.productId.productCategoryId.id,
+              product_category_name:
+                order.productId.productCategoryId.product_category_name,
+            },
+          },
+          selected_variant: order.selected_variant,
+          quantity: order.quantity,
+          total_price: order.total_price,
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find order by id: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find order by id: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

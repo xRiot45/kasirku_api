@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CashierGuard } from 'src/common/guards/cashier.guard';
 import { OrdersReponseDto } from './dtos/orders.dto';
 import { OrdersService } from './orders.service';
@@ -18,5 +18,13 @@ export class OrdersController {
   @UseGuards(AuthGuard, CashierGuard)
   async findAllOrdersController(): Promise<IBaseResponse<OrdersReponseDto[]>> {
     return this.ordersService.findAllOrdersService();
+  }
+
+  @Get('/show/:id')
+  @UseGuards(AuthGuard, CashierGuard)
+  async findOrderByIdController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<OrdersReponseDto>> {
+    return this.ordersService.findOrderById(id);
   }
 }
