@@ -195,6 +195,43 @@ export class OrdersService {
     }
   }
 
+  async deleteAllOrdersService(): Promise<WebResponse> {
+    try {
+      const orders = await this.ordersRepository.findAllOrders();
+      if (!orders || orders.length === 0) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Orders Is Empty',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.ordersRepository.deleteAllOrders();
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Delete all orders successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error delete all orders: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error delete all orders: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async deleteOrderByIdService(id: string): Promise<WebResponse> {
     try {
       const order = await this.ordersRepository.findOrderById(id);

@@ -35,6 +35,12 @@ export class OrdersController {
     return this.ordersService.findOrderById(id);
   }
 
+  @Delete('/delete/all')
+  @UseGuards(AuthGuard, CashierGuard)
+  async deleteAllOrdersController(): Promise<WebResponse> {
+    return this.ordersService.deleteAllOrdersService();
+  }
+
   @Delete('/delete/:id')
   @UseGuards(AuthGuard, CashierGuard)
   async deleteOrderByIdController(
