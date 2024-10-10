@@ -1,4 +1,5 @@
 import { Carts } from 'src/app/carts/entities/carts.entity';
+import { Orders } from 'src/app/orders/entities/orders.entity';
 import { ProductCategory } from 'src/app/product_category/entities/product_category.entity';
 import { ProductStatusType } from 'src/common/enums/product-status.enum';
 import {
@@ -75,6 +76,9 @@ export class Products {
 
   @OneToMany(() => Carts, (carts) => carts.productId)
   carts: Carts[];
+
+  @OneToMany(() => Orders, (orders) => orders.productId)
+  orders: Orders[];
 
   @CreateDateColumn({
     type: 'timestamp',
