@@ -20,4 +20,10 @@ export class OrdersRepository implements IOrdersRepository {
   async createOrders(data: Orders[]): Promise<Orders[]> {
     return await this.ordersRepository.save(data);
   }
+
+  async findAllOrders(): Promise<Orders[]> {
+    return await this.ordersRepository.find({
+      relations: ['productId', 'productId.productCategoryId'],
+    });
+  }
 }

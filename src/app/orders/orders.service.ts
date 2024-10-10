@@ -84,4 +84,60 @@ export class OrdersService {
       );
     }
   }
+
+  async findAllOrdersService(): Promise<IBaseResponse<OrdersReponseDto[]>> {
+    try {
+      const orders = await this.ordersRepository.findAllOrders();
+      if (!orders) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Orders Is Empty',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const responseData = orders.map((order) => ({
+        id: order.id,
+        product: {
+          id: order.productId.id,
+          product_name: order.productId.product_name,
+          product_code: order.productId.product_code,
+          product_price: Number(order.productId.product_price),
+          product_photos: order.productId.product_photos,
+          product_category: {
+            id: order.productId.productCategoryId.id,
+            product_category_name:
+              order.productId.productCategoryId.product_category_name,
+          },
+        },
+        selected_variant: order.selected_variant,
+        quantity: order.quantity,
+        total_price: order.total_price,
+      }));
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Find all orders successfully',
+        data: responseData,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find all orders: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find all orders: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
