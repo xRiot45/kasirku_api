@@ -194,4 +194,41 @@ export class OrdersService {
       );
     }
   }
+
+  async deleteOrderByIdService(id: string): Promise<WebResponse> {
+    try {
+      const order = await this.ordersRepository.findOrderById(id);
+      if (!order) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Orders Not Found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.ordersRepository.deleteOrder(id);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Order deleted successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error delete order: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error delete order: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
