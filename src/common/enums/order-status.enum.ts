@@ -1,6 +1,6 @@
 export enum OrderStatusType {
-  CREATED = 'Order Dibuat',
-  PROCESSING = 'Sedang Diproses',
+  CONFIRMED = 'Order Dikonfirmasi',
+  PROCESSING = 'Order Sedang Diproses',
   COMPLETED = 'Order Selesai',
   CANCELED = 'Order Dibatalkan',
 }

@@ -1,5 +1,5 @@
+import { Checkout } from 'src/app/checkout/entities/checkout.entity';
 import { Products } from 'src/app/products/entities/products.entity';
-import { OrderStatusType } from 'src/common/enums/order-status.enum';
 import {
   Column,
   CreateDateColumn,
@@ -38,44 +38,6 @@ export class Orders {
   })
   total_price: number;
 
-  //   @Column({
-  //     type: 'int',
-  //     nullable: false,
-  //   })
-  //   total_order_price: number;
-
-  //   @CreateDateColumn({
-  //     type: 'timestamp',
-  //     default: () => 'CURRENT_TIMESTAMP(6)',
-  //   })
-  //   order_date: Date;
-
-  //   @Column({
-  //     type: 'int',
-  //     nullable: false,
-  //   })
-  //   payment_amount: number;
-
-  //   @Column({
-  //     type: 'int',
-  //     nullable: false,
-  //   })
-  //   change_returned: number;
-
-  //   @Column({
-  //     type: 'enum',
-  //     enum: OrderStatusType,
-  //     default: OrderStatusType.CREATED,
-  //   })
-  //   status_order: OrderStatusType;
-
-  //   @Column({
-  //     type: 'varchar',
-  //     nullable: true,
-  //     default: '-',
-  //   })
-  //   seat_number: string;
-
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
@@ -88,6 +50,11 @@ export class Orders {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+
+  @ManyToOne(() => Checkout, (checkout) => checkout.orders)
+  @JoinColumn({ name: 'checkoutId' })
+  nullable: true;
+  checkoutId: Checkout;
 
   constructor(partial: Partial<Orders>) {
     Object.assign(this, partial);
