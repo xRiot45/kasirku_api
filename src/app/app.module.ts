@@ -6,6 +6,7 @@ import { ProductCategoryModule } from './product_category/product_category.modul
 import { ProductModule } from './products/products.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
+import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OrdersModule } from './orders/orders.module';
     ProductModule,
     CartsModule,
     OrdersModule,
+    CheckoutModule,
   ],
   providers: [],
 })
