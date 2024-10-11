@@ -36,16 +36,23 @@ export class OrdersRepository implements IOrdersRepository {
     return await this.ordersRepository.clear();
   }
 
+  // async findAllUncheckedOrders(): Promise<Orders[]> {
+  //   return await this.ordersRepository.find({
+  //     where: { checkoutId: null },
+  //     relations: ['productId', 'productId.productCategoryId'],
+  //   });
+  // }
+
   async findAllUncheckedOrders(): Promise<Orders[]> {
-    return await this.ordersRepository.find({
-      where: {
-        checkoutId: null,
-      },
-      relations: ['productId', 'productId.productCategoryId'],
+    const orders = await this.ordersRepository.find({
+      relations: ['productId', 'productId.productCategoryId', 'checkoutId'],
     });
+
+    // Memfilter orders yang checkoutId nya null
+    return orders.filter((order) => order.checkoutId === null);
   }
 
   async save(orders: Orders[]): Promise<Orders[]> {
-    return this.ordersRepository.save(orders); // Metode save yang digunakan di service
+    return this.ordersRepository.save(orders);
   }
 }

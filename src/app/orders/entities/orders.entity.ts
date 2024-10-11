@@ -51,9 +51,8 @@ export class Orders {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Checkout, (checkout) => checkout.orders)
+  @ManyToOne(() => Checkout, (checkout) => checkout.id)
   @JoinColumn({ name: 'checkoutId' })
-  // nullable: true;
   checkoutId: Checkout;
 
   constructor(partial: Partial<Orders>) {

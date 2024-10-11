@@ -74,7 +74,7 @@ export class Checkout {
   })
   updatedAt: Date;
 
-  @OneToMany(() => Orders, (order) => order.checkoutId)
+  @OneToMany(() => Orders, (orders) => orders.checkoutId)
   orders: Orders[];
 
   constructor(partial: Partial<Checkout>) {
