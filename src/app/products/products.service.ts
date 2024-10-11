@@ -209,8 +209,6 @@ export class ProductService {
         );
       }
 
-      console.log(product);
-
       return {
         statusCode: HttpStatus.OK,
         message: 'Find product by ID successfully',

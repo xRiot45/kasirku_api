@@ -27,8 +27,6 @@ export class CheckoutService {
       const uncheckedOrders =
         await this.ordersRepository.findAllUncheckedOrders();
 
-      console.log(uncheckedOrders);
-
       if (uncheckedOrders.length === 0) {
         throw new HttpException(
           {
