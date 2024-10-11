@@ -1,13 +1,22 @@
 import { Module } from '@nestjs/common';
-import { CheckoutService } from './checkout.service';
-import { CheckoutController } from './checkout.controller';
+import { JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Checkout } from './entities/checkout.entity';
 import { Orders } from '../orders/entities/orders.entity';
+import { CheckoutController } from './checkout.controller';
+import { CheckoutService } from './checkout.service';
+import { Checkout } from './entities/checkout.entity';
+import { CheckoutRepository } from './repositories/checkout.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Checkout, Orders])],
   controllers: [CheckoutController],
-  providers: [CheckoutService],
+  providers: [
+    {
+      provide: 'ICheckoutRepository',
+      useClass: CheckoutRepository,
+    },
+    CheckoutService,
+    JwtService,
+  ],
 })
 export class CheckoutModule {}
