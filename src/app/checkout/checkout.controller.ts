@@ -1,45 +1,15 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { CheckoutService } from './checkout.service';
-import { CreateCheckoutDto } from './dtos/create-checkout.dto';
-import { UpdateCheckoutDto } from './dtos/update-checkout.dto';
+import { CheckoutRequestDto } from './dtos/checkout.dto';
 
-@Controller('checkout')
+@Controller('/api/checkout')
 export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
   @Post()
-  create(@Body() createCheckoutDto: CreateCheckoutDto) {
-    return this.checkoutService.create(createCheckoutDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.checkoutService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.checkoutService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCheckoutDto: UpdateCheckoutDto,
-  ) {
-    return this.checkoutService.update(+id, updateCheckoutDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.checkoutService.remove(+id);
+  async checkoutOrdersController(
+    @Body() request: CheckoutRequestDto,
+  ): Promise<any> {
+    return this.checkoutService.checkoutOrdersService(request);
   }
 }

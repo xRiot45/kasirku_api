@@ -1,26 +1,76 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCheckoutDto } from './dtos/create-checkout.dto';
-import { UpdateCheckoutDto } from './dtos/update-checkout.dto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ICheckoutRepository } from './interfaces/checkout.interface';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+import { IOrdersRepository } from '../orders/interfaces/orders.interface';
+import { CheckoutRequestDto } from './dtos/checkout.dto';
+import { OrderStatusType } from 'src/common/enums/order-status.enum';
+import { PaymentMethodType } from 'src/common/enums/payment-method.enum';
+import { Checkout } from './entities/checkout.entity';
 
 @Injectable()
 export class CheckoutService {
-  create(createCheckoutDto: CreateCheckoutDto) {
-    return 'This action adds a new checkout';
-  }
+  constructor(
+    @Inject('ICheckoutRepository')
+    private readonly checkoutRepository: ICheckoutRepository,
+    @Inject('IOrdersRepository')
+    private readonly ordersRepository: IOrdersRepository,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
+  ) {}
 
-  findAll() {
-    return `This action returns all checkout`;
-  }
+  async checkoutOrdersService(request: CheckoutRequestDto): Promise<any> {
+    const { payment_amount, seat_number } = request;
+    try {
+      const uncheckedOrders =
+        await this.ordersRepository.findAllUncheckedOrders();
 
-  findOne(id: number) {
-    return `This action returns a #${id} checkout`;
-  }
+      if (uncheckedOrders.length === 0) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Unchecked orders is empty',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-  update(id: number, updateCheckoutDto: UpdateCheckoutDto) {
-    return `This action updates a #${id} checkout`;
-  }
+      const totalOrderPrice = uncheckedOrders.reduce(
+        (sum, order) => sum + order.total_price,
+        0,
+      );
 
-  remove(id: number) {
-    return `This action removes a #${id} checkout`;
+      const payload = {
+        total_order_price: totalOrderPrice,
+        payment_amount,
+        change_returned: payment_amount - totalOrderPrice,
+        seat_number,
+        order_status: OrderStatusType.CONFIRMED,
+        payment_method: PaymentMethodType.CASH,
+      };
+
+      const checkout = new Checkout(payload);
+      const savedCheckout = await this.checkoutRepository.checkoutOrders([
+        checkout,
+      ]);
+
+      const checkoutId = savedCheckout[0];
+
+      for (const order of uncheckedOrders) {
+        order.checkoutId = checkoutId;
+        await this.ordersRepository.save([order]);
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Checkout successfully',
+        data: {
+          checkout,
+        },
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

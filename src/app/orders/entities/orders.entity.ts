@@ -53,7 +53,7 @@ export class Orders {
 
   @ManyToOne(() => Checkout, (checkout) => checkout.orders)
   @JoinColumn({ name: 'checkoutId' })
-  nullable: true;
+  // nullable: true;
   checkoutId: Checkout;
 
   constructor(partial: Partial<Orders>) {

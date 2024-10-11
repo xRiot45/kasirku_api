@@ -7,4 +7,6 @@ export interface IOrdersRepository {
   findOrderById(id: string): Promise<Orders>;
   deleteOrder(id: string): Promise<DeleteResult>;
   deleteAllOrders(): Promise<void>;
+  findAllUncheckedOrders(): Promise<Orders[]>;
+  save(data: Orders[]): Promise<Orders[]>;
 }

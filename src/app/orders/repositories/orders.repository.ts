@@ -35,4 +35,17 @@ export class OrdersRepository implements IOrdersRepository {
   async deleteAllOrders(): Promise<void> {
     return await this.ordersRepository.clear();
   }
+
+  async findAllUncheckedOrders(): Promise<Orders[]> {
+    return await this.ordersRepository.find({
+      where: {
+        checkoutId: null,
+      },
+      relations: ['productId', 'productId.productCategoryId'],
+    });
+  }
+
+  async save(orders: Orders[]): Promise<Orders[]> {
+    return this.ordersRepository.save(orders); // Metode save yang digunakan di service
+  }
 }
