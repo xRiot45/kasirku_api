@@ -24,4 +24,15 @@ export class CheckoutRepository implements ICheckoutRepository {
       ],
     });
   }
+
+  async findCheckoutById(id: string): Promise<Checkout> {
+    return this.checkoutRepository.findOne({
+      where: { id },
+      relations: [
+        'orders',
+        'orders.productId',
+        'orders.productId.productCategoryId',
+      ],
+    });
+  }
 }
