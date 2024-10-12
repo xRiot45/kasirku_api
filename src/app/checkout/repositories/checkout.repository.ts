@@ -37,6 +37,12 @@ export class CheckoutRepository implements ICheckoutRepository {
     });
   }
 
+  async changeOrderStatusToConfirmed(id: string): Promise<void> {
+    await this.checkoutRepository.update(id, {
+      order_status: OrderStatusType.CONFIRMED,
+    });
+  }
+
   async changeOrderStatusToProcessed(id: string): Promise<void> {
     await this.checkoutRepository.update(id, {
       order_status: OrderStatusType.PROCESSING,

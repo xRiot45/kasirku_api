@@ -38,6 +38,14 @@ export class CheckoutController {
     return this.checkoutService.findCheckoutByIdService(id);
   }
 
+  @Put('/status/confirmed/:id')
+  @UseGuards(CashierGuard, AuthGuard)
+  async changeOrderStatusToConfirmedController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
+    return this.checkoutService.changeOrderStatusToConfirmedService(id);
+  }
+
   @Put('/status/processed/:id')
   @UseGuards(CashierGuard, AuthGuard)
   async changeOrderStatusToProcessedController(
