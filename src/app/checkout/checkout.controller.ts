@@ -38,11 +38,27 @@ export class CheckoutController {
     return this.checkoutService.findCheckoutByIdService(id);
   }
 
-  @Put('/status/change-status-to-processed/:id')
-  // @UseGuards(CashierGuard, AuthGuard)
+  @Put('/status/processed/:id')
+  @UseGuards(CashierGuard, AuthGuard)
   async changeOrderStatusToProcessedController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
     return this.checkoutService.changeOrderStatusToProcessedService(id);
+  }
+
+  @Put('/status/completed/:id')
+  @UseGuards(CashierGuard, AuthGuard)
+  async changeOrderStatusToCompletedController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
+    return this.checkoutService.changeOrderStatusToCompletedService(id);
+  }
+
+  @Put('/status/cancelled/:id')
+  @UseGuards(CashierGuard, AuthGuard)
+  async changeOrderStatusToCancelledController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
+    return this.checkoutService.changeOrderStatusToCancelledService(id);
   }
 }

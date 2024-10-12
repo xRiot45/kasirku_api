@@ -37,17 +37,21 @@ export class CheckoutRepository implements ICheckoutRepository {
     });
   }
 
-  async changeOrderStatusToProcessed(id: string): Promise<Checkout> {
+  async changeOrderStatusToProcessed(id: string): Promise<void> {
     await this.checkoutRepository.update(id, {
       order_status: OrderStatusType.PROCESSING,
     });
-    return this.checkoutRepository.findOne({
-      where: { id },
-      relations: [
-        'orders',
-        'orders.productId',
-        'orders.productId.productCategoryId',
-      ],
+  }
+
+  async changeOrderStatusToCompleted(id: string): Promise<void> {
+    await this.checkoutRepository.update(id, {
+      order_status: OrderStatusType.COMPLETED,
+    });
+  }
+
+  async changeOrderStatusToCancelled(id: string): Promise<void> {
+    await this.checkoutRepository.update(id, {
+      order_status: OrderStatusType.CANCELED,
     });
   }
 }

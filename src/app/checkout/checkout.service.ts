@@ -64,7 +64,7 @@ export class CheckoutService {
         await this.ordersRepository.save([order]);
       }
 
-      const responseData = {
+      const responseData: CheckoutResponseDto = {
         id: checkout.id,
         total_order_price: checkout.total_order_price,
         checkout_date: checkout.checkout_date,
@@ -116,7 +116,9 @@ export class CheckoutService {
     }
   }
 
-  async findAllCheckoutsService(): Promise<any> {
+  async findAllCheckoutsService(): Promise<
+    IBaseResponse<CheckoutResponseDto[]>
+  > {
     try {
       const checkouts = await this.checkoutRepository.findAllCheckouts();
 
@@ -131,7 +133,7 @@ export class CheckoutService {
         );
       }
 
-      const responseData = checkouts.map((checkout) => ({
+      const responseData: CheckoutResponseDto[] = checkouts.map((checkout) => ({
         id: checkout.id,
         total_order_price: checkout.total_order_price,
         checkout_date: checkout.checkout_date,
@@ -268,17 +270,18 @@ export class CheckoutService {
       }
 
       await this.checkoutRepository.changeOrderStatusToProcessed(id);
+      const updatedData = await this.checkoutRepository.findCheckoutById(id);
 
       const responseData: CheckoutResponseDto = {
-        id: checkout.id,
-        total_order_price: checkout.total_order_price,
-        checkout_date: checkout.checkout_date,
-        payment_amount: checkout.payment_amount,
-        change_returned: checkout.change_returned,
-        order_status: checkout.order_status,
-        payment_method: checkout.payment_method,
-        seat_number: checkout.seat_number,
-        orders: checkout.orders.map((order) => ({
+        id: updatedData.id,
+        total_order_price: updatedData.total_order_price,
+        checkout_date: updatedData.checkout_date,
+        payment_amount: updatedData.payment_amount,
+        change_returned: updatedData.change_returned,
+        order_status: updatedData.order_status,
+        payment_method: updatedData.payment_method,
+        seat_number: updatedData.seat_number,
+        orders: updatedData.orders.map((order) => ({
           id: order.id,
           product: {
             id: order.productId.id,
@@ -313,6 +316,156 @@ export class CheckoutService {
 
       this.logger.error(
         `Error change order status to processed: ${error.message}`,
+      );
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async changeOrderStatusToCompletedService(
+    id: string,
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
+    try {
+      const checkout = await this.checkoutRepository.findCheckoutById(id);
+      if (!checkout) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Checkout not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.checkoutRepository.changeOrderStatusToCompleted(id);
+      const updatedData = await this.checkoutRepository.findCheckoutById(id);
+
+      const responseData: CheckoutResponseDto = {
+        id: updatedData.id,
+        total_order_price: updatedData.total_order_price,
+        checkout_date: updatedData.checkout_date,
+        payment_amount: updatedData.payment_amount,
+        change_returned: updatedData.change_returned,
+        order_status: updatedData.order_status,
+        payment_method: updatedData.payment_method,
+        seat_number: updatedData.seat_number,
+        orders: updatedData.orders.map((order) => ({
+          id: order.id,
+          product: {
+            id: order.productId.id,
+            product_name: order.productId.product_name,
+            product_code: order.productId.product_code,
+            product_price: Number(order.productId.product_price),
+            product_photos: order.productId.product_photos,
+            product_category: {
+              id: order.productId.productCategoryId.id,
+              product_category_name:
+                order.productId.productCategoryId.product_category_name,
+            },
+          },
+          selected_variant: order.selected_variant,
+          quantity: order.quantity,
+          total_price: order.total_price,
+        })),
+      };
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Change order status to completed successfully',
+        data: responseData,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(
+          `Error change order status to completed: ${error.message}`,
+        );
+        throw error;
+      }
+
+      this.logger.error(
+        `Error change order status to completed: ${error.message}`,
+      );
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async changeOrderStatusToCancelledService(
+    id: string,
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
+    try {
+      const checkout = await this.checkoutRepository.findCheckoutById(id);
+      if (!checkout) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Checkout not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.checkoutRepository.changeOrderStatusToCancelled(id);
+      const updatedData = await this.checkoutRepository.findCheckoutById(id);
+
+      const responseData: CheckoutResponseDto = {
+        id: updatedData.id,
+        total_order_price: updatedData.total_order_price,
+        checkout_date: updatedData.checkout_date,
+        payment_amount: updatedData.payment_amount,
+        change_returned: updatedData.change_returned,
+        order_status: updatedData.order_status,
+        payment_method: updatedData.payment_method,
+        seat_number: updatedData.seat_number,
+        orders: updatedData.orders.map((order) => ({
+          id: order.id,
+          product: {
+            id: order.productId.id,
+            product_name: order.productId.product_name,
+            product_code: order.productId.product_code,
+            product_price: Number(order.productId.product_price),
+            product_photos: order.productId.product_photos,
+            product_category: {
+              id: order.productId.productCategoryId.id,
+              product_category_name:
+                order.productId.productCategoryId.product_category_name,
+            },
+          },
+          selected_variant: order.selected_variant,
+          quantity: order.quantity,
+          total_price: order.total_price,
+        })),
+      };
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Change order status to cancelled successfully',
+        data: responseData,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(
+          `Error change order status to cancelled: ${error.message}`,
+        );
+        throw error;
+      }
+
+      this.logger.error(
+        `Error change order status to cancelled: ${error.message}`,
       );
       throw new HttpException(
         {
