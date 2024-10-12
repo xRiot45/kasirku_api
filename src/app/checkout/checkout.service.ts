@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ICheckoutRepository } from './interfaces/checkout.interface';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { OrderStatusType } from 'src/common/enums/order-status.enum';
+import { PaymentMethodType } from 'src/common/enums/payment-method.enum';
 import { Logger } from 'winston';
 import { IOrdersRepository } from '../orders/interfaces/orders.interface';
 import { CheckoutRequestDto, CheckoutResponseDto } from './dtos/checkout.dto';
-import { OrderStatusType } from 'src/common/enums/order-status.enum';
-import { PaymentMethodType } from 'src/common/enums/payment-method.enum';
 import { Checkout } from './entities/checkout.entity';
+import { ICheckoutRepository } from './interfaces/checkout.interface';
 
 @Injectable()
 export class CheckoutService {
@@ -64,7 +64,7 @@ export class CheckoutService {
         await this.ordersRepository.save([order]);
       }
 
-      const response = {
+      const responseData = {
         id: checkout.id,
         total_order_price: checkout.total_order_price,
         checkout_date: checkout.checkout_date,
@@ -96,7 +96,7 @@ export class CheckoutService {
       return {
         statusCode: HttpStatus.OK,
         message: 'Checkout successfully',
-        data: response,
+        data: responseData,
       };
     } catch (error) {
       if (error instanceof HttpException) {
@@ -114,5 +114,57 @@ export class CheckoutService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async findAllCheckoutsService(): Promise<any> {
+    try {
+      const checkouts = await this.checkoutRepository.findAllCheckouts();
+
+      if (!checkouts) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Checkouts is empty',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const responseData = checkouts.map((checkout) => ({
+        id: checkout.id,
+        total_order_price: checkout.total_order_price,
+        checkout_date: checkout.checkout_date,
+        payment_amount: checkout.payment_amount,
+        change_returned: checkout.change_returned,
+        order_status: checkout.order_status,
+        payment_method: checkout.payment_method,
+        seat_number: checkout.seat_number,
+        orders: checkout.orders.map((order) => ({
+          id: order.id,
+          product: {
+            id: order.productId.id,
+            product_name: order.productId.product_name,
+            product_code: order.productId.product_code,
+            product_price: Number(order.productId.product_price),
+            product_photos: order.productId.product_photos,
+            product_category: {
+              id: order.productId.productCategoryId.id,
+              product_category_name:
+                order.productId.productCategoryId.product_category_name,
+            },
+          },
+          selected_variant: order.selected_variant,
+          quantity: order.quantity,
+          total_price: order.total_price,
+        })),
+      }));
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find all checkoutn successfully',
+        data: responseData,
+      };
+    } catch (error) {}
   }
 }

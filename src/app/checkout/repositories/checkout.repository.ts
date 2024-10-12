@@ -14,4 +14,14 @@ export class CheckoutRepository implements ICheckoutRepository {
   async checkoutOrders(data: Checkout[]): Promise<Checkout[]> {
     return this.checkoutRepository.save(data);
   }
+
+  async findAllCheckouts(): Promise<Checkout[]> {
+    return this.checkoutRepository.find({
+      relations: [
+        'orders',
+        'orders.productId',
+        'orders.productId.productCategoryId',
+      ],
+    });
+  }
 }

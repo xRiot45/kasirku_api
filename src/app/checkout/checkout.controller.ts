@@ -1,6 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { CheckoutService } from './checkout.service';
-import { CheckoutRequestDto } from './dtos/checkout.dto';
+import { CheckoutRequestDto, CheckoutResponseDto } from './dtos/checkout.dto';
 
 @Controller('/api/checkout')
 export class CheckoutController {
@@ -9,7 +9,14 @@ export class CheckoutController {
   @Post()
   async checkoutOrdersController(
     @Body() request: CheckoutRequestDto,
-  ): Promise<any> {
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
     return this.checkoutService.checkoutOrdersService(request);
+  }
+
+  @Get('/all')
+  async findAllCheckoutController(): Promise<
+    IBaseResponse<CheckoutRequestDto[]>
+  > {
+    return this.checkoutService.findAllCheckoutsService();
   }
 }
