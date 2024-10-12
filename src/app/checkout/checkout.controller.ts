@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CashierGuard } from 'src/common/guards/cashier.guard';
 import { CheckoutService } from './checkout.service';
@@ -28,5 +36,13 @@ export class CheckoutController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
     return this.checkoutService.findCheckoutByIdService(id);
+  }
+
+  @Put('/status/change-status-to-processed/:id')
+  // @UseGuards(CashierGuard, AuthGuard)
+  async changeOrderStatusToProcessedController(
+    @Param('id') id: string,
+  ): Promise<IBaseResponse<CheckoutResponseDto>> {
+    return this.checkoutService.changeOrderStatusToProcessedService(id);
   }
 }

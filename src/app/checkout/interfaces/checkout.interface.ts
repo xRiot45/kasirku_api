@@ -4,4 +4,5 @@ export interface ICheckoutRepository {
   checkoutOrders(data: Checkout[]): Promise<Checkout[]>;
   findAllCheckouts(): Promise<Checkout[]>;
   findCheckoutById(id: string): Promise<Checkout>;
+  changeOrderStatusToProcessed(id: string): Promise<Checkout>;
 }
