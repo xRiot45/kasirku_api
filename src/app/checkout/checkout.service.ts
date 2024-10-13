@@ -164,7 +164,7 @@ export class CheckoutService {
 
       return {
         statusCode: HttpStatus.OK,
-        message: 'Find all checkoutn successfully',
+        message: 'Find all checkout successfully',
         data: responseData,
       };
     } catch (error) {

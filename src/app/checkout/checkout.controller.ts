@@ -17,6 +17,7 @@ export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
   @Post()
+  @UseGuards(CashierGuard, AuthGuard)
   async checkoutOrdersController(
     @Body() request: CheckoutRequestDto,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
@@ -32,6 +33,7 @@ export class CheckoutController {
   }
 
   @Get('/show/:id')
+  @UseGuards(CashierGuard, AuthGuard)
   async findCheckoutByIdController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
