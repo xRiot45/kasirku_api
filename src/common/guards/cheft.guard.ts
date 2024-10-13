@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class CashierGuard implements CanActivate {
+export class CheftGuard implements CanActivate {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER)
     private readonly logger: Logger,

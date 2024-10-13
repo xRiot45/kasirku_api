@@ -1,3 +1,4 @@
+import { CashierGuard } from 'src/common/guards/cashier.guard';
 import {
   Body,
   Controller,
@@ -55,7 +56,6 @@ export class ProductController {
   }
 
   @Get('/all')
-  @UseGuards(AdminGuard, AuthGuard)
   async findAllProductController(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
@@ -74,7 +74,7 @@ export class ProductController {
   }
 
   @Get('/search')
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminGuard, CashierGuard, AuthGuard)
   async searchProductController(
     @Query() query: SearchProductDto,
   ): Promise<IBaseResponse<ProductResponseDto[]>> {
