@@ -46,22 +46,33 @@ export class CashierGuard implements CanActivate {
       );
     }
 
-    const decoded = this.jwtService.verify(token, {
-      secret: ACCESS_TOKEN_SECRET,
-    });
+    try {
+      const decoded = this.jwtService.verify(token, {
+        secret: ACCESS_TOKEN_SECRET,
+      });
 
-    if (decoded.role.role_name !== 'Kasir') {
-      this.logger.error('Invalid token, you do not have permission');
+      if (decoded.role.role_name !== 'Kasir') {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.FORBIDDEN,
+            error: 'Forbidden',
+            message: 'You are not authorized to access this resource',
+          },
+          HttpStatus.FORBIDDEN,
+        );
+      }
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
       throw new HttpException(
         {
-          statusCode: HttpStatus.FORBIDDEN,
-          error: 'Forbidden',
-          message: 'Invalid token, you do not have permission',
+          statusCode: HttpStatus.UNAUTHORIZED,
+          error: 'Unauthorized',
+          message: error.message,
         },
-        HttpStatus.FORBIDDEN,
+        HttpStatus.UNAUTHORIZED,
       );
     }
-
-    return true;
   }
 }
