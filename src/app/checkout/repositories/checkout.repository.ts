@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OrderStatusType } from 'src/common/enums/order-status.enum';
 import { Repository } from 'typeorm';
 import { Checkout } from '../entities/checkout.entity';
 import { ICheckoutRepository } from '../interfaces/checkout.interface';
-import { OrderStatusType } from 'src/common/enums/order-status.enum';
 
 @Injectable()
 export class CheckoutRepository implements ICheckoutRepository {
@@ -59,5 +59,21 @@ export class CheckoutRepository implements ICheckoutRepository {
     await this.checkoutRepository.update(id, {
       order_status: OrderStatusType.CANCELED,
     });
+  }
+
+  async filterCheckouts(orderStatus: OrderStatusType): Promise<Checkout[]> {
+    const query = this.checkoutRepository
+      .createQueryBuilder('checkout')
+      .leftJoinAndSelect('checkout.orders', 'orders')
+      .leftJoinAndSelect('orders.productId', 'product')
+      .leftJoinAndSelect('product.productCategoryId', 'category');
+
+    if (orderStatus) {
+      query.where('checkout.order_status LIKE :order_status', {
+        order_status: `%${orderStatus}%`,
+      });
+    }
+
+    return query.getMany();
   }
 }

@@ -5,12 +5,14 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CashierGuard } from 'src/common/guards/cashier.guard';
 import { CheckoutService } from './checkout.service';
 import { CheckoutRequestDto, CheckoutResponseDto } from './dtos/checkout.dto';
+import { OrderStatusType } from 'src/common/enums/order-status.enum';
 
 @Controller('/api/checkout')
 export class CheckoutController {
@@ -70,5 +72,13 @@ export class CheckoutController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
     return this.checkoutService.changeOrderStatusToCancelledService(id);
+  }
+
+  @Get('/filter')
+  @UseGuards(CashierGuard, AuthGuard)
+  async filterCheckoutsController(
+    @Query('order_status') orderStatus: OrderStatusType,
+  ): Promise<IBaseResponse<CheckoutResponseDto[]>> {
+    return this.checkoutService.filterCheckouts(orderStatus);
   }
 }

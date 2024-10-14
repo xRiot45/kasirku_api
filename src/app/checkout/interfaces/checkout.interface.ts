@@ -1,3 +1,4 @@
+import { OrderStatusType } from 'src/common/enums/order-status.enum';
 import { Checkout } from '../entities/checkout.entity';
 
 export interface ICheckoutRepository {
@@ -8,4 +9,5 @@ export interface ICheckoutRepository {
   changeOrderStatusToProcessed(id: string): Promise<void>;
   changeOrderStatusToCompleted(id: string): Promise<void>;
   changeOrderStatusToCancelled(id: string): Promise<void>;
+  filterCheckouts(orderStatus: OrderStatusType): Promise<Checkout[]>;
 }
