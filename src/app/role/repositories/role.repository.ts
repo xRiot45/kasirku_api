@@ -36,15 +36,42 @@ export class RoleRepository implements IRoleRepository {
     return this.roleRepository.findOne({ where: { id } });
   }
 
-  async searchRole(roleName: RoleType): Promise<Role> {
-    return this.roleRepository.findOne({ where: { role_name: roleName } });
-  }
-
   async updateRole(id: string, data: Partial<Role>): Promise<void> {
     await this.roleRepository.update(id, data);
   }
 
   async deleteRole(id: string): Promise<void> {
     await this.roleRepository.delete(id);
+  }
+
+  async countFilteredRole(role_name: string): Promise<number> {
+    const query = this.roleRepository.createQueryBuilder('role');
+
+    if (role_name) {
+      query.andWhere('role.role_name LIKE :role_name', {
+        role_name: `%${role_name}%`,
+      });
+    }
+
+    return query.getCount();
+  }
+
+  async searchRole(
+    skip: number,
+    take: number,
+    role_name: string,
+  ): Promise<Role[]> {
+    const query = this.roleRepository
+      .createQueryBuilder('role')
+      .skip(skip)
+      .take(take);
+
+    if (role_name) {
+      query.where('role.role_name LIKE :role_name', {
+        role_name: `%${role_name}%`,
+      });
+    }
+
+    return query.getMany();
   }
 }

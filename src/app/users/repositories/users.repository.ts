@@ -115,7 +115,7 @@ export class UsersRepository implements IUsersRepository {
     return query.getCount();
   }
 
-  searchUsers(
+  async searchUsers(
     skip: number,
     take: number,
     full_name: string,

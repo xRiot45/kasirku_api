@@ -1,19 +1,18 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
+  Delete,
   Get,
   Param,
-  Query,
+  Post,
   Put,
-  Delete,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { RoleService } from './role.service';
-import { RoleRequestDto, RoleResponseDto } from './dtos/dto';
-import { RoleType } from 'src/common/enums/role.enum';
 import { AdminGuard } from 'src/common/guards/admin.guard';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RoleRequestDto, RoleResponseDto, SearchRoleDto } from './dtos/dto';
+import { RoleService } from './role.service';
 
 @Controller('/api/role')
 export class RoleController {
@@ -47,9 +46,16 @@ export class RoleController {
   @Get('/search')
   @UseGuards(AdminGuard, AuthGuard)
   async searchRoleController(
-    @Query('role_name') roleName: RoleType,
+    @Query() query: SearchRoleDto,
   ): Promise<IBaseResponse<RoleResponseDto[]>> {
-    return this.roleService.searchRoleService(roleName);
+    const { page, limit, role_name } = query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.roleService.searchRoleService(
+      pageNumber,
+      limitNumber,
+      role_name,
+    );
   }
 
   @Put('/update/:id')

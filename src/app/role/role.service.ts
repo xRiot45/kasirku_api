@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { RoleRequestDto, RoleResponseDto } from './dtos/dto';
-import { RoleRepository } from './repositories/role.repository';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
-import { Role } from './entities/role.entity';
 import { RoleType } from 'src/common/enums/role.enum';
+import { Logger } from 'winston';
+import { RoleRequestDto, RoleResponseDto } from './dtos/dto';
+import { Role } from './entities/role.entity';
+import { RoleRepository } from './repositories/role.repository';
 
 @Injectable()
 export class RoleService {
@@ -156,11 +156,27 @@ export class RoleService {
   }
 
   async searchRoleService(
-    roleName: RoleType,
+    page: number = 1,
+    limit: number = 1,
+    role_name: RoleType,
   ): Promise<IBaseResponse<RoleResponseDto[]>> {
     try {
-      const roles = await this.roleRepository.findByRoleName(roleName);
-      if (!roles) {
+      const skip = (page - 1) * limit;
+      const totalRoles = await this.roleRepository.countFilteredRole(role_name);
+
+      const totalPages = Math.ceil(totalRoles / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const previousPage = hasPreviousPage ? page - 1 : null;
+
+      const roles = await this.roleRepository.searchRole(
+        skip,
+        limit,
+        role_name,
+      );
+
+      if (roles.length === 0) {
         throw new HttpException(
           {
             statusCode: HttpStatus.NOT_FOUND,
@@ -171,13 +187,23 @@ export class RoleService {
         );
       }
 
+      const result: RoleResponseDto[] = roles.map((role) => ({
+        id: role.id,
+        role_name: role.role_name,
+      }));
+
       return {
         statusCode: HttpStatus.OK,
-        message: `Search role ${roleName} successfully`,
-        data: [roles].map((role) => ({
-          id: role.id,
-          role_name: role.role_name,
-        })),
+        message: 'Search role successfully',
+        data: result,
+        totalItems: totalRoles,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage,
+        previousPage,
       };
     } catch (error) {
       if (error instanceof HttpException) {
