@@ -65,98 +65,6 @@ export class RoleService {
 
   async findAllRoleService(
     page: number = 1,
-    limit: number = 10,
-  ): Promise<IBaseResponse<RoleResponseDto[]>> {
-    try {
-      const skip = (page - 1) * limit;
-      const roles = await this.roleRepository.findAllRole(skip, limit);
-
-      const totalRoles = await this.roleRepository.countRoles();
-      const totalPages = Math.ceil(totalRoles / limit);
-
-      const hasNextPage = page < totalPages;
-      const hasPreviousPage = page > 1;
-      const nextPage = hasNextPage ? page + 1 : null;
-      const previousPage = hasPreviousPage ? page - 1 : null;
-
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'Find All Roles Successfully!',
-        data: roles.map((role) => ({
-          id: role.id,
-          role_name: role.role_name,
-        })),
-        totalItems: totalRoles,
-        totalPages,
-        currentPage: page,
-        limit,
-        hasNextPage,
-        hasPreviousPage,
-        nextPage,
-        previousPage,
-      };
-    } catch (error) {
-      if (error instanceof HttpException) {
-        this.logger.error(`Error find all role: ${error.message}`);
-        throw error;
-      }
-
-      this.logger.error(`Error find all role: ${error.message}`);
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal Server Error',
-          message: 'Internal Server Error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async findRoleByIdService(
-    id: string,
-  ): Promise<IBaseResponse<RoleResponseDto>> {
-    try {
-      const role = await this.roleRepository.findById(id);
-      if (!role) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Found',
-            message: 'Role not found',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'Find role by id successfully',
-        data: {
-          id: role.id,
-          role_name: role.role_name,
-        },
-      };
-    } catch (error) {
-      if (error instanceof HttpException) {
-        this.logger.error(`Error find role by id: ${error.message}`);
-        throw error;
-      }
-
-      this.logger.error(`Error find find role by id: ${error.message}`);
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal Server Error',
-          message: 'Internal Server Error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async searchRoleService(
-    page: number = 1,
     limit: number = 1,
     role_name: RoleType,
   ): Promise<IBaseResponse<RoleResponseDto[]>> {
@@ -212,6 +120,48 @@ export class RoleService {
       }
 
       this.logger.error(`Error searching role: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findRoleByIdService(
+    id: string,
+  ): Promise<IBaseResponse<RoleResponseDto>> {
+    try {
+      const role = await this.roleRepository.findById(id);
+      if (!role) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Role not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find role by id successfully',
+        data: {
+          id: role.id,
+          role_name: role.role_name,
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find role by id: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error find find role by id: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

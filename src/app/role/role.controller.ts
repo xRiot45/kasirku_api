@@ -24,15 +24,19 @@ export class RoleController {
     return this.roleService.createRoleService(request);
   }
 
-  @Get('/all')
+  @Get()
   @UseGuards(AdminGuard, AuthGuard)
   async findAllRoleController(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
+    @Query() query: SearchRoleDto,
   ): Promise<IBaseResponse<RoleResponseDto[]>> {
+    const { page, limit, role_name } = query;
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
-    return this.roleService.findAllRoleService(pageNumber, limitNumber);
+    return this.roleService.findAllRoleService(
+      pageNumber,
+      limitNumber,
+      role_name,
+    );
   }
 
   @Get('/show/:id')
@@ -41,21 +45,6 @@ export class RoleController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<RoleResponseDto>> {
     return this.roleService.findRoleByIdService(id);
-  }
-
-  @Get('/search')
-  @UseGuards(AdminGuard, AuthGuard)
-  async searchRoleController(
-    @Query() query: SearchRoleDto,
-  ): Promise<IBaseResponse<RoleResponseDto[]>> {
-    const { page, limit, role_name } = query;
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
-    return this.roleService.searchRoleService(
-      pageNumber,
-      limitNumber,
-      role_name,
-    );
   }
 
   @Put('/update/:id')
