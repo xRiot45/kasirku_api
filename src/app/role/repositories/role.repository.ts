@@ -60,11 +60,14 @@ export class RoleRepository implements IRoleRepository {
     skip: number,
     take: number,
     role_name: string,
+    orderBy: string = 'role.createdAt',
+    orderDirection: 'ASC' | 'DESC' = 'DESC',
   ): Promise<Role[]> {
     const query = this.roleRepository
       .createQueryBuilder('role')
       .skip(skip)
-      .take(take);
+      .take(take)
+      .orderBy(orderBy, orderDirection);
 
     if (role_name) {
       query.where('role.role_name LIKE :role_name', {

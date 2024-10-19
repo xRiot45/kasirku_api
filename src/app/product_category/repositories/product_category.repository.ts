@@ -64,11 +64,14 @@ export class ProductCategoryRepository implements IProductCategory {
     skip: number,
     take: number,
     product_category_name: string,
+    orderBy: string = 'product_category.createdAt',
+    orderDirection: 'ASC' | 'DESC' = 'DESC',
   ): Promise<ProductCategory[]> {
     const query = this.productCategoryRepository
       .createQueryBuilder('product_category')
       .skip(skip)
-      .take(take);
+      .take(take)
+      .orderBy(orderBy, orderDirection);
 
     if (product_category_name) {
       query.where(
