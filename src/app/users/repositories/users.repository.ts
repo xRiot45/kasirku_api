@@ -123,7 +123,7 @@ export class UsersRepository implements IUsersRepository {
     role_name: string,
     employee_number: string,
     gender: GenderType,
-    orderBy: string = 'users.createdAt',
+    orderBy: string = 'user.createdAt',
     orderDirection: 'ASC' | 'DESC' = 'DESC',
   ): Promise<Users[]> {
     const query = this.usersRepository
