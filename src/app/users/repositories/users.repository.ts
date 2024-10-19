@@ -123,12 +123,15 @@ export class UsersRepository implements IUsersRepository {
     role_name: string,
     employee_number: string,
     gender: GenderType,
+    orderBy: string = 'users.createdAt',
+    orderDirection: 'ASC' | 'DESC' = 'DESC',
   ): Promise<Users[]> {
     const query = this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.roleId', 'role')
       .skip(skip)
-      .take(take);
+      .take(take)
+      .orderBy(orderBy, orderDirection);
 
     if (full_name) {
       query.where('user.full_name LIKE :full_name', {
