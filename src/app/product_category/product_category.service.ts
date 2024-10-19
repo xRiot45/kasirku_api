@@ -72,62 +72,62 @@ export class ProductCategoryService {
     }
   }
 
-  async findAllProductCategoryService(
-    page: number = 1,
-    limit: number = 1,
-  ): Promise<IBaseResponse<ProductCategoryResponseDto[]>> {
-    try {
-      const skip = (page - 1) * limit;
-      const productCategories =
-        await this.productCategoryRepository.findAllProductCategory(
-          skip,
-          limit,
-        );
+  // async findAllProductCategoryService(
+  //   page: number = 1,
+  //   limit: number = 1,
+  // ): Promise<IBaseResponse<ProductCategoryResponseDto[]>> {
+  //   try {
+  //     const skip = (page - 1) * limit;
+  //     const productCategories =
+  //       await this.productCategoryRepository.findAllProductCategory(
+  //         skip,
+  //         limit,
+  //       );
 
-      const totalProductCategories =
-        await this.productCategoryRepository.countProductCategory();
+  //     const totalProductCategories =
+  //       await this.productCategoryRepository.countProductCategory();
 
-      const totalPages = Math.ceil(totalProductCategories / limit);
-      const hasNextPage = page < totalPages;
-      const hasPreviousPage = page > 1;
-      const nextPage = hasNextPage ? page + 1 : null;
-      const previousPage = hasPreviousPage ? page - 1 : null;
+  //     const totalPages = Math.ceil(totalProductCategories / limit);
+  //     const hasNextPage = page < totalPages;
+  //     const hasPreviousPage = page > 1;
+  //     const nextPage = hasNextPage ? page + 1 : null;
+  //     const previousPage = hasPreviousPage ? page - 1 : null;
 
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'Find all product categories successfully',
-        data: productCategories.map((productCategory) => ({
-          id: productCategory.id,
-          product_category_name: productCategory.product_category_name,
-        })),
-        totalItems: totalProductCategories,
-        totalPages,
-        currentPage: page,
-        limit,
-        hasNextPage,
-        hasPreviousPage,
-        nextPage,
-        previousPage,
-      };
-    } catch (error) {
-      if (error instanceof HttpException) {
-        this.logger.error(
-          `Error find all product categories: ${error.message}`,
-        );
-        throw error;
-      }
+  //     return {
+  //       statusCode: HttpStatus.OK,
+  //       message: 'Find all product categories successfully',
+  //       data: productCategories.map((productCategory) => ({
+  //         id: productCategory.id,
+  //         product_category_name: productCategory.product_category_name,
+  //       })),
+  //       totalItems: totalProductCategories,
+  //       totalPages,
+  //       currentPage: page,
+  //       limit,
+  //       hasNextPage,
+  //       hasPreviousPage,
+  //       nextPage,
+  //       previousPage,
+  //     };
+  //   } catch (error) {
+  //     if (error instanceof HttpException) {
+  //       this.logger.error(
+  //         `Error find all product categories: ${error.message}`,
+  //       );
+  //       throw error;
+  //     }
 
-      this.logger.error(`Error find all product categories: ${error.message}`);
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal Server Error',
-          message: 'Internal Server Error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
+  //     this.logger.error(`Error find all product categories: ${error.message}`);
+  //     throw new HttpException(
+  //       {
+  //         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+  //         error: 'Internal Server Error',
+  //         message: 'Internal Server Error',
+  //       },
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
 
   async findProductCategoryByIdService(
     id: string,
@@ -171,7 +171,7 @@ export class ProductCategoryService {
     }
   }
 
-  async searchProductCategoryService(
+  async findAllProductCategoryService(
     page: number = 1,
     limit: number = 1,
     product_category_name: string,
