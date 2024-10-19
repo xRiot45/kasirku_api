@@ -20,7 +20,6 @@ import { AuthGuard } from 'src/common/guards/auth.guard';
 import { imageFileFilter, imageFileName } from 'src/common/utils/fileUploads';
 import {
   ChangePasswordRequestDto,
-  DeleteUserRequestDto,
   GetUserResponse,
   SearchUsersDto,
   UpdateProfileRequestDto,
@@ -84,11 +83,8 @@ export class UsersController {
 
   @Delete('/delete/:id')
   @UseGuards(AuthGuard, AdminGuard)
-  async deleteUserController(
-    @Param('id') id: string,
-    @Body() request: DeleteUserRequestDto,
-  ): Promise<WebResponse> {
-    return this.usersService.deleteUserService(id, request);
+  async deleteUserController(@Param('id') id: string): Promise<WebResponse> {
+    return this.usersService.deleteUserService(id);
   }
 
   @Patch('/update-profile')
