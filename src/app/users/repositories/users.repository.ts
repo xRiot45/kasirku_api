@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IUsersRepository } from '../interfaces/users.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
-import { Users } from '../entities/users.entity';
 import { Role } from 'src/app/role/entities/role.entity';
 import { GenderType } from 'src/common/enums/gender.enum';
+import { DeleteResult, Repository } from 'typeorm';
+import { Users } from '../entities/users.entity';
+import { IUsersRepository } from '../interfaces/users.interface';
 
 @Injectable()
 export class UsersRepository implements IUsersRepository {
@@ -203,6 +203,38 @@ export class UsersRepository implements IUsersRepository {
 
     return this.usersRepository.findOne({
       where: { id: userId },
+      relations: ['roleId'],
+    });
+  }
+
+  async updateProfileByAdmin(
+    id: string,
+    full_name: string,
+    birthday_date: Date,
+    place_of_birth: string,
+    phone_number: string,
+    gender: GenderType,
+    address: string,
+    photo: string,
+    roleId: string,
+  ) {
+    const role = await this.roleRepository.findOne({
+      where: { id: roleId },
+    });
+
+    await this.usersRepository.update(id, {
+      full_name,
+      birthday_date,
+      place_of_birth,
+      phone_number,
+      gender,
+      address,
+      photo,
+      roleId: role,
+    });
+
+    return this.usersRepository.findOne({
+      where: { id: id },
       relations: ['roleId'],
     });
   }

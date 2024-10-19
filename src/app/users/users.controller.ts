@@ -22,6 +22,7 @@ import {
   ChangePasswordRequestDto,
   GetUserResponse,
   SearchUsersDto,
+  UpdateProfileByAdminRequestDto,
   UpdateProfileRequestDto,
 } from './dtos/users.dto';
 import { Users } from './entities/users.entity';
@@ -98,7 +99,7 @@ export class UsersController {
       fileFilter: imageFileFilter,
     }),
   )
-  async updateUserController(
+  async updateProfileController(
     @AuthDecorator() authenticatedUser: Users,
     @Body() request: UpdateProfileRequestDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
@@ -111,6 +112,30 @@ export class UsersController {
       authenticatedUser.id,
       updateProfile,
     );
+  }
+
+  @Patch('/update-profile/:id')
+  @UseGuards(AdminGuard, AuthGuard)
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './uploads',
+        filename: imageFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async updateProfileByAdminController(
+    @Param('id') id: string,
+    @Body() request: UpdateProfileByAdminRequestDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ): Promise<IBaseResponse<GetUserResponse>> {
+    const updateProfile = {
+      ...request,
+      photo: files.find((file) => file.fieldname === 'photo'),
+    };
+
+    return this.usersService.updateProfileByAdminService(id, updateProfile);
   }
 
   @Put('/change-password')

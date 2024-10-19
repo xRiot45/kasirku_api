@@ -60,17 +60,6 @@ export class SearchUsersDto {
   readonly role_name?: string;
 }
 
-export class DeleteUserRequestDto {
-  @IsString()
-  readonly email: string;
-
-  @IsString()
-  readonly employee_number: string;
-
-  @IsString()
-  readonly password: string;
-}
-
 export class UpdateProfileRequestDto {
   @IsString()
   @IsOptional()
@@ -108,6 +97,49 @@ export class UpdateProfileRequestDto {
   @IsString()
   @IsOptional()
   readonly photo?: Express.Multer.File;
+}
+
+export class UpdateProfileByAdminRequestDto {
+  @IsString()
+  @IsOptional()
+  readonly full_name?: string;
+
+  @IsDate()
+  @IsOptional()
+  @Transform(({ value }) => {
+    const [day, month, year] = value.split('-');
+    return new Date(`${year}-${month}-${day}`);
+  })
+  readonly birthday_date?: Date;
+
+  @IsString()
+  @IsOptional()
+  readonly place_of_birth?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(25)
+  readonly phone_number?: string;
+
+  @IsEnum(GenderType, {
+    message:
+      'gender must be one of the following: ' +
+      Object.values(GenderType).join(', '),
+  })
+  @IsOptional()
+  readonly gender?: GenderType;
+
+  @IsString()
+  @IsOptional()
+  readonly address?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly photo?: Express.Multer.File;
+
+  @IsString()
+  @IsOptional()
+  readonly roleId: string;
 }
 
 export class ChangePasswordRequestDto {

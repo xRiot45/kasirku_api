@@ -6,6 +6,7 @@ import { Logger } from 'winston';
 import {
   ChangePasswordRequestDto,
   GetUserResponse,
+  UpdateProfileByAdminRequestDto,
   UpdateProfileRequestDto,
 } from './dtos/users.dto';
 import { Users } from './entities/users.entity';
@@ -355,6 +356,105 @@ export class UsersService {
         user.gender,
         user.address,
         user.photo,
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Update profile successfully',
+        data: {
+          id: updatedProfile.id,
+          full_name: updatedProfile.full_name,
+          email: updatedProfile.email,
+          employee_number: updatedProfile.employee_number,
+          birthday_date: updatedProfile.birthday_date,
+          place_of_birth: updatedProfile.place_of_birth,
+          phone_number: updatedProfile.phone_number,
+          gender: updatedProfile.gender,
+          address: updatedProfile.address,
+          photo: updatedProfile.photo,
+          role: {
+            id: updatedProfile.roleId.id,
+            role_name: updatedProfile.roleId.role_name,
+          },
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error update profile: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error update profile: ${error}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateProfileByAdminService(
+    id: string,
+    request: UpdateProfileByAdminRequestDto,
+  ): Promise<IBaseResponse<GetUserResponse>> {
+    const {
+      full_name,
+      birthday_date,
+      place_of_birth,
+      phone_number,
+      gender,
+      address,
+      photo,
+      roleId,
+    } = request;
+
+    try {
+      const userProfile = await this.usersRepository.findById(id);
+      const fullNameExist =
+        await this.usersRepository.findByFullName(full_name);
+
+      if (fullNameExist && fullNameExist.id !== id) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.CONFLICT,
+            error: 'Conflict',
+            message: 'Full name already used',
+          },
+          HttpStatus.CONFLICT,
+        );
+      }
+
+      let photoPath = userProfile.photo;
+      if (photo && typeof photo === 'object') {
+        photoPath = `uploads/${(photo as { filename: string } | null)?.filename}`;
+      }
+
+      const role = await this.usersRepository.findRoleId(roleId);
+      const payload = {
+        full_name,
+        birthday_date,
+        place_of_birth,
+        phone_number,
+        gender,
+        address,
+        photo: photoPath,
+        roleId: role,
+      };
+
+      const user = new Users(payload);
+      const updatedProfile = await this.usersRepository.updateProfileByAdmin(
+        id,
+        user.full_name,
+        user.birthday_date,
+        user.place_of_birth,
+        user.phone_number,
+        user.gender,
+        user.address,
+        user.photo,
+        user.roleId.id,
       );
 
       return {

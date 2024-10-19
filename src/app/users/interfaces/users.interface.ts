@@ -1,7 +1,7 @@
 import { Role } from 'src/app/role/entities/role.entity';
-import { Users } from '../entities/users.entity';
 import { GenderType } from 'src/common/enums/gender.enum';
 import { DeleteResult } from 'typeorm';
+import { Users } from '../entities/users.entity';
 
 export interface IUsersRepository {
   findEmail(email: string): Promise<Users | undefined>;
@@ -43,5 +43,17 @@ export interface IUsersRepository {
     gender: GenderType,
     address: string,
     photo: string,
+  ): Promise<any>;
+
+  updateProfileByAdmin(
+    id: string,
+    full_name: string,
+    birthday_date: Date,
+    place_of_birth: string,
+    phone_number: string,
+    gender: GenderType,
+    address: string,
+    photo: string,
+    roleId: string,
   ): Promise<any>;
 }
