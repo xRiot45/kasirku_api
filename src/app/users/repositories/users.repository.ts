@@ -150,7 +150,7 @@ export class UsersRepository implements IUsersRepository {
     }
 
     if (employee_number) {
-      query.where('role.employee_number LIKE :employee_number', {
+      query.where('employee_number LIKE :employee_number', {
         employee_number: `%${employee_number}%`,
       });
     }
