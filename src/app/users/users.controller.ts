@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Put,
   Query,
   UploadedFiles,
@@ -88,7 +87,7 @@ export class UsersController {
     return this.usersService.deleteUserService(id);
   }
 
-  @Patch('/update-profile')
+  @Put('/update-profile')
   @UseGuards(AuthGuard)
   @UseInterceptors(
     AnyFilesInterceptor({
@@ -114,7 +113,7 @@ export class UsersController {
     );
   }
 
-  @Patch('/update-profile/:id')
+  @Put('/update-profile/:id')
   @UseGuards(AdminGuard, AuthGuard)
   @UseInterceptors(
     AnyFilesInterceptor({
