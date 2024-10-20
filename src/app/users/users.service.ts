@@ -165,17 +165,6 @@ export class UsersService {
         gender,
       );
 
-      if (users.length === 0) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Found',
-            message: 'Users not found',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
       const result: GetUserResponse[] = users.map((user) => ({
         id: user.id,
         full_name: user.full_name,
