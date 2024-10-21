@@ -139,17 +139,6 @@ export class ProductCategoryService {
           product_category_name,
         );
 
-      if (productCategories.length === 0) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Found',
-            message: 'Product Category not found',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
       const results: ProductCategoryResponseDto[] = productCategories.map(
         (productCategory) => ({
           id: productCategory.id,

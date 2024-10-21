@@ -84,17 +84,6 @@ export class RoleService {
         role_name,
       );
 
-      if (roles.length === 0) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Found',
-            message: 'Role not found',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
       const result: RoleResponseDto[] = roles.map((role) => ({
         id: role.id,
         role_name: role.role_name,
