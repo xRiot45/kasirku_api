@@ -47,7 +47,7 @@ export class CreateProductRequestDto {
 
   @IsArray()
   @Type(() => ProductVariantDto)
-  readonly product_variants: ProductVariantDto[];
+  readonly product_variants: string[];
 
   @Type(() => ProductPhotoDto)
   readonly product_photos: ProductPhotoDto[];

@@ -64,22 +64,13 @@ export class ProductService {
       }
 
       const productCode = generateProductCode();
-      const productVariantsPaths = [];
-      const productPhotosPaths = [];
+      const productVariantsPaths = product_variants.map((variant) => ({
+        variant,
+      }));
 
-      if (product_variants && Array.isArray(product_variants)) {
-        for (const variant of product_variants) {
-          productVariantsPaths.push({
-            variant: variant,
-          });
-        }
-      }
-
-      if (product_photos && Array.isArray(product_photos)) {
-        for (const photo of product_photos) {
-          productPhotosPaths.push({ filename: `uploads/${photo.filename}` });
-        }
-      }
+      const productPhotosPaths = product_photos.map((photo) => ({
+        filename: `uploads/${photo.filename}`,
+      }));
 
       const payload = {
         product_name,
@@ -131,67 +122,6 @@ export class ProductService {
       );
     }
   }
-
-  // async findAllProductService(
-  //   page: number = 1,
-  //   limit: number = 10,
-  // ): Promise<IBaseResponse<ProductResponseDto[]>> {
-  //   try {
-  //     const skip = (page - 1) * limit;
-  //     const products = await this.productRepository.findAllProduct(skip, limit);
-
-  //     const totalProducts = await this.productRepository.countProducts();
-  //     const totalPages = Math.ceil(totalProducts / limit);
-  //     const hasNextPage = page < totalPages;
-  //     const hasPreviousPage = page > 1;
-  //     const nextPage = hasNextPage ? page + 1 : null;
-  //     const previousPage = hasPreviousPage ? page - 1 : null;
-
-  //     return {
-  //       statusCode: HttpStatus.OK,
-  //       message: 'Find All Products Successfully!',
-  //       data: products.map((product) => ({
-  //         id: product.id,
-  //         product_name: product.product_name,
-  //         product_code: product.product_code,
-  //         product_stock: Number(product.product_stock),
-  //         product_price: Number(product.product_price),
-  //         product_description: product.product_description,
-  //         product_variants: product.product_variants,
-  //         product_photos: product.product_photos,
-  //         product_status: product.product_status,
-  //         product_category: {
-  //           id: product.productCategoryId.id,
-  //           product_category_name:
-  //             product.productCategoryId.product_category_name,
-  //         },
-  //       })),
-  //       totalItems: totalProducts,
-  //       totalPages,
-  //       currentPage: page,
-  //       limit,
-  //       hasNextPage,
-  //       hasPreviousPage,
-  //       nextPage,
-  //       previousPage,
-  //     };
-  //   } catch (error) {
-  //     if (error instanceof HttpException) {
-  //       this.logger.error(`Error find all products: ${error.message}`);
-  //       throw error;
-  //     }
-
-  //     this.logger.error(`Error find all products: ${error.message}`);
-  //     throw new HttpException(
-  //       {
-  //         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-  //         error: 'Internal Server Error',
-  //         message: 'Internal Server Error',
-  //       },
-  //       HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
 
   async findProductByIdService(
     id: string,
