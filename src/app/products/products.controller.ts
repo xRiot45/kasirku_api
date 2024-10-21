@@ -1,4 +1,3 @@
-import { CashierGuard } from 'src/common/guards/cashier.guard';
 import {
   Body,
   Controller,
@@ -55,16 +54,6 @@ export class ProductController {
     return this.productService.createProductService(createProduct);
   }
 
-  @Get('/all')
-  async findAllProductController(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
-  ): Promise<IBaseResponse<ProductResponseDto[]>> {
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
-    return this.productService.findAllProductService(pageNumber, limitNumber);
-  }
-
   @Get('/show/:id')
   @UseGuards(AdminGuard, AuthGuard)
   async findProductByIdController(
@@ -73,9 +62,9 @@ export class ProductController {
     return this.productService.findProductByIdService(id);
   }
 
-  @Get('/search')
-  @UseGuards(AdminGuard, CashierGuard, AuthGuard)
-  async searchProductController(
+  @Get()
+  @UseGuards(AdminGuard, AuthGuard)
+  async findAllProductController(
     @Query() query: SearchProductDto,
   ): Promise<IBaseResponse<ProductResponseDto[]>> {
     const {
@@ -92,7 +81,7 @@ export class ProductController {
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
 
-    return this.productService.searchProductService(
+    return this.productService.findAllProductService(
       pageNumber,
       limitNumber,
       product_name,
