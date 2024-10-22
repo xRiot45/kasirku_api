@@ -1,11 +1,5 @@
 import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
-class ProductPhotoDto {
-  @IsString()
-  @IsNotEmpty()
-  filename: string;
-}
-
 export class OrdersRequestDto {
   @IsString()
   @IsNotEmpty()
@@ -31,7 +25,7 @@ export class OrdersReponseDto {
     readonly product_name: string;
     readonly product_code: string;
     readonly product_price: number;
-    readonly product_photos: ProductPhotoDto[];
+    readonly product_photo: string;
     readonly product_category: {
       readonly id: string;
       readonly product_category_name: string;

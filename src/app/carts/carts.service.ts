@@ -80,7 +80,7 @@ export class CartsService {
               product_name: existingCartItem.productId.product_name,
               product_code: existingCartItem.productId.product_code,
               product_price: Number(existingCartItem.productId.product_price),
-              product_photos: existingCartItem.productId.product_photos,
+              product_photo: existingCartItem.productId.product_photo,
               product_category: {
                 id: existingCartItem.productId.productCategoryId.id,
                 product_category_name:
@@ -112,7 +112,7 @@ export class CartsService {
               product_name: createdCart.productId.product_name,
               product_code: createdCart.productId.product_code,
               product_price: Number(createdCart.productId.product_price),
-              product_photos: createdCart.productId.product_photos,
+              product_photo: createdCart.productId.product_photo,
               product_category: {
                 id: createdCart.productId.productCategoryId.id,
                 product_category_name:
@@ -168,7 +168,7 @@ export class CartsService {
             product_name: cart.productId.product_name,
             product_code: cart.productId.product_code,
             product_price: Number(cart.productId.product_price),
-            product_photos: cart.productId.product_photos,
+            product_photo: cart.productId.product_photo,
             product_category: {
               id: cart.productId.productCategoryId.id,
               product_category_name:

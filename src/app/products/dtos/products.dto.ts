@@ -16,12 +16,6 @@ class ProductVariantDto {
   variant: string;
 }
 
-class ProductPhotoDto {
-  @IsString()
-  @IsNotEmpty()
-  filename: string;
-}
-
 export class CreateProductRequestDto {
   @IsString()
   @MinLength(1, {
@@ -49,8 +43,9 @@ export class CreateProductRequestDto {
   @Type(() => ProductVariantDto)
   readonly product_variants: string[];
 
-  @Type(() => ProductPhotoDto)
-  readonly product_photos: ProductPhotoDto[];
+  @IsString()
+  @IsOptional()
+  readonly product_photo?: Express.Multer.File;
 
   @IsString()
   @IsNotEmpty()
@@ -89,9 +84,9 @@ export class UpdateProductRequestDto {
   @IsOptional()
   readonly product_variants: string[];
 
-  @Type(() => ProductPhotoDto)
+  @IsString()
   @IsOptional()
-  readonly product_photos: ProductPhotoDto[];
+  readonly product_photo?: Express.Multer.File;
 
   @IsString()
   @IsOptional()
@@ -140,7 +135,7 @@ export class ProductResponseDto {
   readonly product_price: number;
   readonly product_description: string;
   readonly product_variants: ProductVariantDto[];
-  readonly product_photos: ProductPhotoDto[];
+  readonly product_photo: string;
   readonly product_status: ProductStatusType;
   readonly product_category: {
     readonly id: string;

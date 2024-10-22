@@ -50,7 +50,7 @@ export class OrdersService {
           product_name: order.productId.product_name,
           product_code: order.productId.product_code,
           product_price: Number(order.productId.product_price),
-          product_photos: order.productId.product_photos,
+          product_photo: order.productId.product_photo,
           product_category: {
             id: order.productId.productCategoryId.id,
             product_category_name:
@@ -106,7 +106,7 @@ export class OrdersService {
           product_name: order.productId.product_name,
           product_code: order.productId.product_code,
           product_price: Number(order.productId.product_price),
-          product_photos: order.productId.product_photos,
+          product_photo: order.productId.product_photo,
           product_category: {
             id: order.productId.productCategoryId.id,
             product_category_name:
@@ -165,7 +165,7 @@ export class OrdersService {
             product_name: order.productId.product_name,
             product_code: order.productId.product_code,
             product_price: Number(order.productId.product_price),
-            product_photos: order.productId.product_photos,
+            product_photo: order.productId.product_photo,
             product_category: {
               id: order.productId.productCategoryId.id,
               product_category_name:

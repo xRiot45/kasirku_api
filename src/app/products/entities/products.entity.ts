@@ -58,10 +58,10 @@ export class Products {
   product_variants: { variant: string }[];
 
   @Column({
-    type: 'json',
+    type: 'text',
     nullable: false,
   })
-  product_photos: { filename: string }[];
+  product_photo: string;
 
   @Column({
     type: 'enum',
@@ -92,6 +92,7 @@ export class Products {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+  static product_photo: any;
 
   constructor(partial: Partial<Products>) {
     Object.assign(this, partial);

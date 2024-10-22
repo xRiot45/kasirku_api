@@ -31,7 +31,7 @@ export class ProductService {
       product_price,
       product_description,
       product_variants,
-      product_photos,
+      product_photo,
       productCategoryId,
     } = request;
 
@@ -68,9 +68,10 @@ export class ProductService {
         variant,
       }));
 
-      const productPhotosPaths = product_photos.map((photo) => ({
-        filename: `uploads/${photo.filename}`,
-      }));
+      let productPhotoPath = null;
+      if (product_photo && typeof product_photo === 'object') {
+        productPhotoPath = `uploads/${product_photo.filename}`;
+      }
 
       const payload = {
         product_name,
@@ -79,7 +80,7 @@ export class ProductService {
         product_code: productCode,
         product_description,
         product_variants: productVariantsPaths,
-        product_photos: productPhotosPaths,
+        product_photo: productPhotoPath,
         productCategoryId: productCategory,
       };
 
@@ -97,7 +98,7 @@ export class ProductService {
           product_price: Number(createProduct.product_price),
           product_description: createProduct.product_description,
           product_variants: createProduct.product_variants,
-          product_photos: createProduct.product_photos,
+          product_photo: createProduct.product_photo,
           product_status: createProduct.product_status,
           product_category: {
             id: createProduct.productCategoryId.id,
@@ -150,7 +151,7 @@ export class ProductService {
           product_price: Number(product.product_price),
           product_description: product.product_description,
           product_variants: product.product_variants,
-          product_photos: product.product_photos,
+          product_photo: product.product_photo,
           product_status: product.product_status,
           product_category: {
             id: product.productCategoryId.id,
@@ -223,7 +224,7 @@ export class ProductService {
         product_price: Number(product.product_price),
         product_description: product.product_description,
         product_variants: product.product_variants,
-        product_photos: product.product_photos,
+        product_photo: product.product_photo,
         product_status: product.product_status,
         product_category: {
           id: product.productCategoryId.id,
@@ -273,7 +274,7 @@ export class ProductService {
       product_stock,
       product_description,
       product_variants,
-      product_photos,
+      product_photo,
       product_status,
       productCategoryId,
     } = request;
@@ -319,6 +320,10 @@ export class ProductService {
 
       const productCode = generateProductCode();
 
+      const productPhotoPath = product_photo
+        ? `uploads/${product_photo.filename}`
+        : Products.product_photo;
+
       // Prepare update payload
       const payload: Partial<Products> = {
         product_name,
@@ -327,6 +332,7 @@ export class ProductService {
         product_code: productCode,
         product_description,
         product_status,
+        product_photo: productPhotoPath,
         productCategoryId: productCategory,
       };
 
@@ -337,13 +343,7 @@ export class ProductService {
         }));
       }
 
-      // Update product_photos if provided
-      if (product_photos && Array.isArray(product_photos)) {
-        payload.product_photos = product_photos.map((photo) => ({
-          filename: `uploads/${photo.filename}`,
-        }));
-      }
-
+      // Update product_photo if provided
       const updatedProduct = await this.productRepository.updateProduct(
         id,
         payload as Products,
@@ -360,7 +360,7 @@ export class ProductService {
           product_price: Number(updatedProduct.product_price),
           product_description: updatedProduct.product_description,
           product_variants: updatedProduct.product_variants,
-          product_photos: updatedProduct.product_photos,
+          product_photo: updatedProduct.product_photo,
           product_status: updatedProduct.product_status,
           product_category: {
             id: updatedProduct.productCategoryId.id,
@@ -401,8 +401,8 @@ export class ProductService {
         );
       }
 
-      if (product.product_photos && Array.isArray(product.product_photos)) {
-        product.product_photos.forEach((photoObject) => {
+      if (product.product_photo && Array.isArray(product.product_photo)) {
+        product.product_photo.forEach((photoObject) => {
           if (photoObject?.filename) {
             const filePath = path.join(
               __dirname,

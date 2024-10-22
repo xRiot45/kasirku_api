@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { plainToClass } from 'class-transformer';
 import { diskStorage } from 'multer';
 import { AdminGuard } from 'src/common/guards/admin.guard';
@@ -32,23 +32,25 @@ export class ProductController {
   @Post('/create')
   @UseGuards(AuthGuard, AdminGuard)
   @UseInterceptors(
-    FilesInterceptor('product_photos', 10, {
+    AnyFilesInterceptor({
       storage: diskStorage({
         destination: './uploads',
         filename: imageFileName,
       }),
       fileFilter: imageFileFilter,
-      limits: { fileSize: 1024 * 1024 * 2 },
     }),
   )
   async createProductController(
     @Body() request: CreateProductRequestDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<IBaseResponse<ProductResponseDto>> {
-    const productPhotosDto = files.map((file) => ({ filename: file.filename }));
+    const productPhoto = files.find(
+      (file) => file.fieldname === 'product_photo',
+    );
+
     const createProduct = plainToClass(CreateProductRequestDto, {
       ...request,
-      product_photos: productPhotosDto,
+      product_photo: productPhoto,
     });
 
     return this.productService.createProductService(createProduct);
@@ -96,13 +98,12 @@ export class ProductController {
   @Put('/update/:id')
   @UseGuards(AuthGuard, AdminGuard)
   @UseInterceptors(
-    FilesInterceptor('product_photos', 10, {
+    AnyFilesInterceptor({
       storage: diskStorage({
         destination: './uploads',
         filename: imageFileName,
       }),
       fileFilter: imageFileFilter,
-      limits: { fileSize: 1024 * 1024 * 2 },
     }),
   )
   async updateProductController(
@@ -112,13 +113,13 @@ export class ProductController {
   ): Promise<IBaseResponse<ProductResponseDto>> {
     // Cek apakah ada file yang diunggah
     const productPhotos =
-      files && files.length > 0
-        ? files.map((file) => ({ filename: file.filename }))
-        : [];
+      files.length > 0
+        ? files.find((file) => file.fieldname === 'product_photo')
+        : null;
 
     const updateProduct = plainToClass(UpdateProductRequestDto, {
       ...request,
-      product_photos: productPhotos.length > 0 ? productPhotos : undefined,
+      product_photo: productPhotos,
     });
 
     return this.productService.updateProductService(id, updateProduct);
