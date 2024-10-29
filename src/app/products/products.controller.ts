@@ -65,7 +65,7 @@ export class ProductController {
   }
 
   @Get()
-  @UseGuards(AdminGuard, AuthGuard)
+  @UseGuards(AuthGuard)
   async findAllProductController(
     @Query() query: SearchProductDto,
   ): Promise<IBaseResponse<ProductResponseDto[]>> {
