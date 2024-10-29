@@ -57,7 +57,6 @@ export class ProductController {
   }
 
   @Get('/show/:id')
-  @UseGuards(AdminGuard, AuthGuard)
   async findProductByIdController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<ProductResponseDto>> {
@@ -65,7 +64,6 @@ export class ProductController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
   async findAllProductController(
     @Query() query: SearchProductDto,
   ): Promise<IBaseResponse<ProductResponseDto[]>> {
