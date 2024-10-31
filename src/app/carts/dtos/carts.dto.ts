@@ -1,11 +1,5 @@
 import { IsInt, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
-class ProductPhotoDto {
-  @IsString()
-  @IsNotEmpty()
-  filename: string;
-}
-
 export class CartsRequestDto {
   @IsNotEmpty()
   @IsString()
