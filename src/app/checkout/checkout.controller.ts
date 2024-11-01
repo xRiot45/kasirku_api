@@ -18,7 +18,7 @@ import { OrderStatusType } from 'src/common/enums/order-status.enum';
 export class CheckoutController {
   constructor(private readonly checkoutService: CheckoutService) {}
 
-  @Post()
+  @Post('/create')
   @UseGuards(CashierGuard, AuthGuard)
   async checkoutOrdersController(
     @Body() request: CheckoutRequestDto,
