@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { OrderStatusType } from 'src/common/enums/order-status.enum';
 
 export class CheckoutRequestDto {
   @IsNumber()
@@ -37,4 +45,18 @@ export class CheckoutResponseDto {
     readonly quantity: number;
     readonly total_price: number;
   }[];
+}
+
+export class SearchCheckoutsDto {
+  @IsOptional()
+  @IsNumberString()
+  readonly page: string = '1';
+
+  @IsOptional()
+  @IsNumberString()
+  readonly limit: string = '10';
+
+  @IsOptional()
+  @IsString()
+  readonly order_status?: OrderStatusType;
 }

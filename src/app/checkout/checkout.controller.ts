@@ -11,8 +11,11 @@ import {
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CashierGuard } from 'src/common/guards/cashier.guard';
 import { CheckoutService } from './checkout.service';
-import { CheckoutRequestDto, CheckoutResponseDto } from './dtos/checkout.dto';
-import { OrderStatusType } from 'src/common/enums/order-status.enum';
+import {
+  CheckoutRequestDto,
+  CheckoutResponseDto,
+  SearchCheckoutsDto,
+} from './dtos/checkout.dto';
 
 @Controller('/api/checkout')
 export class CheckoutController {
@@ -28,10 +31,17 @@ export class CheckoutController {
 
   @Get('/all')
   @UseGuards(CashierGuard, AuthGuard)
-  async findAllCheckoutController(): Promise<
-    IBaseResponse<CheckoutRequestDto[]>
-  > {
-    return this.checkoutService.findAllCheckoutsService();
+  async findAllCheckoutController(
+    @Query() query: SearchCheckoutsDto,
+  ): Promise<IBaseResponse<CheckoutRequestDto[]>> {
+    const { page, limit, order_status } = query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return this.checkoutService.findAllCheckoutsService(
+      pageNumber,
+      limitNumber,
+      order_status,
+    );
   }
 
   @Get('/show/:id')
@@ -72,13 +82,5 @@ export class CheckoutController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
     return this.checkoutService.changeOrderStatusToCancelledService(id);
-  }
-
-  @Get('/filter')
-  @UseGuards(CashierGuard, AuthGuard)
-  async filterCheckoutsController(
-    @Query('order_status') orderStatus: OrderStatusType,
-  ): Promise<IBaseResponse<CheckoutResponseDto[]>> {
-    return this.checkoutService.filterCheckouts(orderStatus);
   }
 }

@@ -16,14 +16,29 @@ export class CheckoutRepository implements ICheckoutRepository {
     return this.checkoutRepository.save(data);
   }
 
-  async findAllCheckouts(): Promise<Checkout[]> {
-    return this.checkoutRepository.find({
-      relations: [
-        'orders',
-        'orders.productId',
-        'orders.productId.productCategoryId',
-      ],
-    });
+  async findAllCheckouts(
+    skip: number,
+    take: number,
+    order_status: string,
+    orderBy: string = 'checkouts.createdAt',
+    orderDirection: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<Checkout[]> {
+    const query = this.checkoutRepository
+      .createQueryBuilder('checkouts')
+      .leftJoinAndSelect('checkouts.orders', 'orders')
+      .leftJoinAndSelect('orders.productId', 'productId')
+      .leftJoinAndSelect('productId.productCategoryId', 'productCategoryId')
+      .skip(skip)
+      .take(take)
+      .orderBy(orderBy, orderDirection);
+
+    if (order_status) {
+      query.where('order_status LIKE :order_status', {
+        order_status: `%${order_status}%`,
+      });
+    }
+
+    return query.getMany();
   }
 
   async findCheckoutById(id: string): Promise<Checkout> {
@@ -61,19 +76,19 @@ export class CheckoutRepository implements ICheckoutRepository {
     });
   }
 
-  async filterCheckouts(orderStatus: OrderStatusType): Promise<Checkout[]> {
+  async countFilteredCheckouts(order_status: OrderStatusType): Promise<number> {
     const query = this.checkoutRepository
       .createQueryBuilder('checkout')
       .leftJoinAndSelect('checkout.orders', 'orders')
       .leftJoinAndSelect('orders.productId', 'product')
       .leftJoinAndSelect('product.productCategoryId', 'category');
 
-    if (orderStatus) {
+    if (order_status) {
       query.where('checkout.order_status LIKE :order_status', {
-        order_status: `%${orderStatus}%`,
+        order_status: `%${order_status}%`,
       });
     }
 
-    return query.getMany();
+    return query.getCount();
   }
 }

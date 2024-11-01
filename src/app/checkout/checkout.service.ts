@@ -127,11 +127,27 @@ export class CheckoutService {
     }
   }
 
-  async findAllCheckoutsService(): Promise<
-    IBaseResponse<CheckoutResponseDto[]>
-  > {
+  async findAllCheckoutsService(
+    page: number = 1,
+    limit: number = 1,
+    order_status: OrderStatusType,
+  ): Promise<IBaseResponse<CheckoutResponseDto[]>> {
     try {
-      const checkouts = await this.checkoutRepository.findAllCheckouts();
+      const skip = (page - 1) * limit;
+      const totalCheckouts =
+        await this.checkoutRepository.countFilteredCheckouts(order_status);
+
+      const totalPages = Math.ceil(totalCheckouts / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const previousPage = hasPreviousPage ? page - 1 : null;
+
+      const checkouts = await this.checkoutRepository.findAllCheckouts(
+        skip,
+        limit,
+        order_status,
+      );
 
       if (!checkouts) {
         throw new HttpException(
@@ -177,6 +193,14 @@ export class CheckoutService {
         statusCode: HttpStatus.OK,
         message: 'Find all checkout successfully',
         data: responseData,
+        totalItems: totalCheckouts,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage,
+        previousPage,
       };
     } catch (error) {
       if (error instanceof HttpException) {
@@ -553,76 +577,6 @@ export class CheckoutService {
       this.logger.error(
         `Error change order status to cancelled: ${error.message}`,
       );
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'Internal Server Error',
-          message: 'Internal server error',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async filterCheckouts(
-    orderStatus: OrderStatusType,
-  ): Promise<IBaseResponse<CheckoutResponseDto[]>> {
-    try {
-      const checkouts =
-        await this.checkoutRepository.filterCheckouts(orderStatus);
-
-      if (!checkouts) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Found',
-            message: 'Checkouts not found',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      const responseData: CheckoutResponseDto[] = checkouts.map((checkout) => ({
-        id: checkout.id,
-        total_order_price: checkout.total_order_price,
-        checkout_date: checkout.checkout_date,
-        payment_amount: checkout.payment_amount,
-        change_returned: checkout.change_returned,
-        order_status: checkout.order_status,
-        payment_method: checkout.payment_method,
-        seat_number: checkout.seat_number,
-        orders: checkout.orders.map((order) => ({
-          id: order.id,
-          product: {
-            id: order.productId.id,
-            product_name: order.productId.product_name,
-            product_code: order.productId.product_code,
-            product_price: Number(order.productId.product_price),
-            product_photo: order.productId.product_photo,
-            product_category: {
-              id: order.productId.productCategoryId.id,
-              product_category_name:
-                order.productId.productCategoryId.product_category_name,
-            },
-          },
-          selected_variant: order.selected_variant,
-          quantity: order.quantity,
-          total_price: order.total_price,
-        })),
-      }));
-
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'Filter checkouts successfully',
-        data: responseData,
-      };
-    } catch (error) {
-      if (error instanceof HttpException) {
-        this.logger.error(`Error filter data checkouts: ${error.message}`);
-        throw error;
-      }
-
-      this.logger.error(`Error filter data checkouts: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
