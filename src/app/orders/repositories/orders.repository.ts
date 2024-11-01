@@ -16,9 +16,12 @@ export class OrdersRepository implements IOrdersRepository {
   }
 
   async findAllOrders(): Promise<Orders[]> {
-    return await this.ordersRepository.find({
-      relations: ['productId', 'productId.productCategoryId'],
-    });
+    return await this.ordersRepository
+      .createQueryBuilder('orders')
+      .leftJoinAndSelect('orders.productId', 'product')
+      .leftJoinAndSelect('product.productCategoryId', 'productCategory')
+      .where('orders.checkoutId IS NULL')
+      .getMany();
   }
 
   async findOrderById(id: string): Promise<Orders> {

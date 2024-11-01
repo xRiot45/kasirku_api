@@ -43,6 +43,17 @@ export class CheckoutService {
         0,
       );
 
+      if (payment_amount < totalOrderPrice) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.BAD_REQUEST,
+            error: 'Bad Request',
+            message: 'Payment amount is less than total order price',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const payload = {
         total_order_price: totalOrderPrice,
         payment_amount,

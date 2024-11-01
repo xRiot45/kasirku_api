@@ -35,7 +35,3 @@ export class OrdersReponseDto {
   readonly quantity: number;
   readonly total_price: number;
 }
-
-// export class OrdersReponseDto {
-//   [key: string]: OrderReponseDto;
-// }

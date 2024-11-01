@@ -88,16 +88,6 @@ export class OrdersService {
   async findAllOrdersService(): Promise<IBaseResponse<OrdersReponseDto[]>> {
     try {
       const orders = await this.ordersRepository.findAllOrders();
-      if (!orders) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.NOT_FOUND,
-            error: 'Not Found',
-            message: 'Orders Is Empty',
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
 
       const responseData = orders.map((order) => ({
         id: order.id,
