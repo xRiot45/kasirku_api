@@ -16,6 +16,7 @@ import {
   CheckoutResponseDto,
   SearchCheckoutsDto,
 } from './dtos/checkout.dto';
+import { CheftGuard } from 'src/common/guards/cheft.guard';
 
 @Controller('/api/checkout')
 export class CheckoutController {
@@ -61,7 +62,7 @@ export class CheckoutController {
   }
 
   @Put('/status/processed/:id')
-  @UseGuards(CashierGuard, AuthGuard)
+  @UseGuards(CashierGuard, CheftGuard, AuthGuard)
   async changeOrderStatusToProcessedController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
@@ -69,7 +70,7 @@ export class CheckoutController {
   }
 
   @Put('/status/completed/:id')
-  @UseGuards(CashierGuard, AuthGuard)
+  @UseGuards(CashierGuard, CheftGuard, AuthGuard)
   async changeOrderStatusToCompletedController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
