@@ -1,40 +1,21 @@
-import { Logger } from 'winston';
-import { JwtService } from '@nestjs/jwt';
-import { ACCESS_TOKEN_SECRET } from 'src/configs/environment.config';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import {
   CanActivate,
   ExecutionContext,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ACCESS_TOKEN_SECRET } from 'src/configs/environment.config';
 
 @Injectable()
 export class CashierGuard implements CanActivate {
-  constructor(
-    @Inject(WINSTON_MODULE_PROVIDER)
-    private readonly logger: Logger,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const authorizationHeader = request.headers.authorization;
+    const token = request.headers.authorization?.split(' ')[1];
 
-    if (!authorizationHeader) {
-      throw new HttpException(
-        {
-          statusCode: HttpStatus.UNAUTHORIZED,
-          error: 'Unauthorized',
-          message: 'Authorization header not found',
-        },
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    const token = authorizationHeader.split(' ')[1];
     if (!token) {
       throw new HttpException(
         {
@@ -46,33 +27,20 @@ export class CashierGuard implements CanActivate {
       );
     }
 
-    try {
-      const decoded = this.jwtService.verify(token, {
-        secret: ACCESS_TOKEN_SECRET,
-      });
-
-      if (decoded.role.role_name !== 'Kasir') {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.FORBIDDEN,
-            error: 'Forbidden',
-            message: 'You are not authorized to access this resource',
-          },
-          HttpStatus.FORBIDDEN,
-        );
-      }
-
-      return true;
-    } catch (error) {
-      this.logger.error(error);
+    const decodedToken = this.jwtService.verify(token, {
+      secret: ACCESS_TOKEN_SECRET,
+    });
+    if (decodedToken.role.role_name !== 'Kasir') {
       throw new HttpException(
         {
-          statusCode: HttpStatus.UNAUTHORIZED,
-          error: 'Unauthorized',
-          message: error.message,
+          statusCode: HttpStatus.FORBIDDEN,
+          error: 'Forbidden access',
+          message: 'Forbidden access',
         },
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.FORBIDDEN,
       );
     }
+
+    return true;
   }
 }

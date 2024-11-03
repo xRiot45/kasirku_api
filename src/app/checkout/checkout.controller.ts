@@ -8,15 +8,16 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { CashierGuard } from 'src/common/guards/cashier.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CheckoutService } from './checkout.service';
 import {
   CheckoutRequestDto,
   CheckoutResponseDto,
   SearchCheckoutsDto,
 } from './dtos/checkout.dto';
-import { CheftGuard } from 'src/common/guards/cheft.guard';
 
 @Controller('/api/checkout')
 export class CheckoutController {
@@ -54,7 +55,8 @@ export class CheckoutController {
   }
 
   @Put('/status/confirmed/:id')
-  @UseGuards(CashierGuard, AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir')
   async changeOrderStatusToConfirmedController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
@@ -62,7 +64,8 @@ export class CheckoutController {
   }
 
   @Put('/status/processed/:id')
-  @UseGuards(CashierGuard, CheftGuard, AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir', 'Koki')
   async changeOrderStatusToProcessedController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
@@ -70,7 +73,8 @@ export class CheckoutController {
   }
 
   @Put('/status/completed/:id')
-  @UseGuards(CashierGuard, CheftGuard, AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir', 'Koki')
   async changeOrderStatusToCompletedController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
@@ -78,7 +82,8 @@ export class CheckoutController {
   }
 
   @Put('/status/cancelled/:id')
-  @UseGuards(CashierGuard, AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir')
   async changeOrderStatusToCancelledController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
