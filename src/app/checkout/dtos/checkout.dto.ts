@@ -21,6 +21,7 @@ export class CheckoutRequestDto {
 
 export class CheckoutResponseDto {
   readonly id: string;
+  readonly invoice: string;
   readonly total_order_price: number;
   readonly checkout_date: Date;
   readonly payment_amount: number;

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { OrderStatusType } from 'src/common/enums/order-status.enum';
 import { PaymentMethodType } from 'src/common/enums/payment-method.enum';
+import { generateInvoiceNumber } from 'src/common/helpers/generateInvoice.helper';
 import { Logger } from 'winston';
 import { IOrdersRepository } from '../orders/interfaces/orders.interface';
 import { CheckoutRequestDto, CheckoutResponseDto } from './dtos/checkout.dto';
@@ -54,7 +55,10 @@ export class CheckoutService {
         );
       }
 
+      const generateInvoice = generateInvoiceNumber();
+
       const payload = {
+        invoice: generateInvoice,
         total_order_price: totalOrderPrice,
         payment_amount,
         change_returned: payment_amount - totalOrderPrice,
@@ -77,6 +81,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto = {
         id: checkout.id,
+        invoice: checkout.invoice,
         total_order_price: checkout.total_order_price,
         checkout_date: checkout.checkout_date,
         payment_amount: checkout.payment_amount,
@@ -162,6 +167,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto[] = checkouts.map((checkout) => ({
         id: checkout.id,
+        invoice: checkout.invoice,
         total_order_price: checkout.total_order_price,
         checkout_date: checkout.checkout_date,
         payment_amount: checkout.payment_amount,
@@ -238,6 +244,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto = {
         id: checkout.id,
+        invoice: checkout.invoice,
         total_order_price: checkout.total_order_price,
         checkout_date: checkout.checkout_date,
         payment_amount: checkout.payment_amount,
@@ -309,6 +316,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto = {
         id: updatedData.id,
+        invoice: updatedData.invoice,
         total_order_price: updatedData.total_order_price,
         checkout_date: updatedData.checkout_date,
         payment_amount: updatedData.payment_amount,
@@ -384,6 +392,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto = {
         id: updatedData.id,
+        invoice: updatedData.invoice,
         total_order_price: updatedData.total_order_price,
         checkout_date: updatedData.checkout_date,
         payment_amount: updatedData.payment_amount,
@@ -459,6 +468,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto = {
         id: updatedData.id,
+        invoice: updatedData.invoice,
         total_order_price: updatedData.total_order_price,
         checkout_date: updatedData.checkout_date,
         payment_amount: updatedData.payment_amount,
@@ -534,6 +544,7 @@ export class CheckoutService {
 
       const responseData: CheckoutResponseDto = {
         id: updatedData.id,
+        invoice: updatedData.invoice,
         total_order_price: updatedData.total_order_price,
         checkout_date: updatedData.checkout_date,
         payment_amount: updatedData.payment_amount,

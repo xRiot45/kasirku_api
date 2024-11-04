@@ -15,6 +15,12 @@ export class Checkout {
   id: string;
 
   @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  invoice: string;
+
+  @Column({
     type: 'int',
     nullable: false,
   })
