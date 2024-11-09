@@ -133,6 +133,7 @@ export class ProductsRepository implements IProductsRepository {
     const query = this.productsRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.productCategoryId', 'productCategory')
+      .orderBy('product.createdAt', 'DESC')
       .skip(skip)
       .take(take);
 
