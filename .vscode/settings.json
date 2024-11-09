@@ -1,7 +1,11 @@
 {
   "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairsHorizontal": true,
-  "editor.guides.bracketPairs": false,
+  "editor.guides.bracketPairsHorizontal": false,
+  "editor.guides.bracketPairs": true,
   "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-  "editor.guides.highlightActiveBracketPair": true
+  "editor.guides.highlightActiveBracketPair": false,
+  "editor.detectIndentation": false,
+  "editor.guides.indentation": false,
+  "editor.guides.highlightActiveIndentation": false,
+  "editor.indentSize": "tabSize"
 }
