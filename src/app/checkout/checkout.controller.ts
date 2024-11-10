@@ -32,7 +32,8 @@ export class CheckoutController {
   }
 
   @Get('/all')
-  @UseGuards(CashierGuard, AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir', 'Koki')
   async findAllCheckoutController(
     @Query() query: SearchCheckoutsDto,
   ): Promise<IBaseResponse<CheckoutRequestDto[]>> {
@@ -47,7 +48,8 @@ export class CheckoutController {
   }
 
   @Get('/show/:id')
-  @UseGuards(CashierGuard, AuthGuard)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir', 'Koki')
   async findCheckoutByIdController(
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
