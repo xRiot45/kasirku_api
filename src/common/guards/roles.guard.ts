@@ -57,11 +57,11 @@ export class RolesGuard implements CanActivate {
     } else {
       throw new HttpException(
         {
-          statusCode: HttpStatus.UNAUTHORIZED,
-          error: 'Unauthorized',
+          statusCode: HttpStatus.FORBIDDEN,
+          error: 'Forbidden access',
           message: 'Forbidden access',
         },
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.FORBIDDEN,
       );
     }
   }
