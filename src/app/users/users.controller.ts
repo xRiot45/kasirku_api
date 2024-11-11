@@ -34,7 +34,7 @@ export class UsersController {
   @Get('/me')
   @UseGuards(AuthGuard)
   async findUserController(
-    @AuthDecorator() userPayload: { id: string },
+    @AuthDecorator() userPayload,
   ): Promise<IBaseResponse<GetUserResponse>> {
     return this.usersService.findUserService(userPayload);
   }
