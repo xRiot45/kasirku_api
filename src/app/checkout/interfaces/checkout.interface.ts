@@ -14,4 +14,5 @@ export interface ICheckoutRepository {
   changeOrderStatusToCompleted(id: string): Promise<void>;
   changeOrderStatusToCancelled(id: string): Promise<void>;
   countFilteredCheckouts(order_status: OrderStatusType): Promise<number>;
+  getAllDataCheckouts(): Promise<any>;
 }

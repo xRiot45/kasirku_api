@@ -41,6 +41,16 @@ export class CheckoutRepository implements ICheckoutRepository {
     return query.getMany();
   }
 
+  async getAllDataCheckouts(): Promise<any> {
+    const query = await this.checkoutRepository
+      .createQueryBuilder('checkout')
+      .leftJoinAndSelect('checkout.orders', 'orders')
+      .leftJoinAndSelect('orders.productId', 'product')
+      .leftJoinAndSelect('product.productCategoryId', 'category');
+
+    return query.getMany();
+  }
+
   async findCheckoutById(id: string): Promise<Checkout> {
     return this.checkoutRepository.findOne({
       where: { id },

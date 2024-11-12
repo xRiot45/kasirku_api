@@ -7,6 +7,7 @@ import { ProductModule } from './products/products.module';
 import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
 import { CheckoutModule } from './checkout/checkout.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CheckoutModule } from './checkout/checkout.module';
     CartsModule,
     OrdersModule,
     CheckoutModule,
+    ReportsModule,
   ],
   providers: [],
 })

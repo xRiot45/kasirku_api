@@ -1,12 +1,12 @@
-import { AppModule } from './app/app.module';
-import { ConfigModule } from '@nestjs/config';
-import { CommonModule } from './common/common.module';
-import { DatabaseModule } from './database/database.module';
 import { Global, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
-import { logger } from './configs/logger.config';
 import * as config from 'src/configs/environment.config';
+import { AppModule } from './app/app.module';
+import { CommonModule } from './common/common.module';
+import { logger } from './configs/logger.config';
+import { DatabaseModule } from './database/database.module';
 
 @Global()
 @Module({
