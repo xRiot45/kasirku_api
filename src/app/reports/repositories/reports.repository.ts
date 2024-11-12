@@ -44,6 +44,7 @@ export class ReportsRepository implements IReportsRepository {
   ): Promise<Reports[]> {
     const query = this.reportsRepository
       .createQueryBuilder('report')
+      .orderBy('createdAt', 'DESC')
       .skip(skip)
       .take(take);
 
