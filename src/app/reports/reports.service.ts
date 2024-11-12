@@ -17,7 +17,7 @@ export class ReportsService {
     private readonly logger: Logger,
   ) {}
 
-  async createReportsService(): Promise<IBaseResponse<any>> {
+  async createReportsService(): Promise<IBaseResponse<ReportsResponseDto[]>> {
     try {
       const checkoutsData = await this.checkoutRepository.getAllDataCheckouts();
 
@@ -96,6 +96,89 @@ export class ReportsService {
         throw error;
       }
       this.logger.error(`Error creating reports: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findAllReportsService(
+    page: number = 1,
+    limit: number = 10,
+    reporting_date: string,
+  ): Promise<IBaseResponse<ReportsResponseDto[]>> {
+    try {
+      const skip = (page - 1) * limit;
+      const totalReports =
+        await this.reportsRepository.countFilteredReports(reporting_date);
+
+      const totalPages = Math.ceil(totalReports / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const previousPage = hasPreviousPage ? page - 1 : null;
+
+      const reportsData = await this.reportsRepository.findAllReports(
+        skip,
+        limit,
+        reporting_date,
+      );
+      const responseData: ReportsResponseDto[] = reportsData.map((report) => ({
+        id: report.id,
+        invoice: report.invoice,
+        reporting_date: report.reporting_date,
+        total_order_price: report.total_order_price,
+        checkout_date: report.checkout_date,
+        payment_amount: report.payment_amount,
+        change_returned: report.change_returned,
+        order_status: report.order_status,
+        payment_method: report.payment_method,
+        seat_number: report.seat_number,
+        orders: Array.isArray(report.orders)
+          ? report.orders.map((order) => ({
+              id: order?.id,
+              product: {
+                id: order?.productId?.id,
+                product_name: order?.productId?.product_name,
+                product_code: order?.productId?.product_code,
+                product_price: order?.productId?.product_price,
+                product_photo: order?.productId?.product_photo,
+                product_category: {
+                  id: order?.productId?.productCategoryId?.id,
+                  product_category_name:
+                    order?.productId?.productCategoryId?.product_category_name,
+                },
+              },
+              selected_variant: order?.selected_variant,
+              quantity: order?.quantity,
+              total_price: order?.total_price,
+            }))
+          : [],
+      }));
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Find all reports successfully',
+        data: responseData,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage,
+        hasPreviousPage,
+        nextPage,
+        previousPage,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error find all reports: ${error.message}`);
+        throw error;
+      }
+      this.logger.error(`Error find all reports: ${error.message}`);
       throw new HttpException(
         {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

@@ -24,4 +24,35 @@ export class ReportsRepository implements IReportsRepository {
     await this.checkoutRepository.createQueryBuilder().delete().execute();
     return savedReports;
   }
+
+  async countFilteredReports(reporting_date: Date): Promise<number> {
+    const query = this.reportsRepository.createQueryBuilder('report');
+
+    if (reporting_date) {
+      query.andWhere('report.reporting_date = :reporting_date', {
+        reporting_date: reporting_date,
+      });
+    }
+
+    return query.getCount();
+  }
+
+  async findAllReports(
+    skip: number,
+    take: number,
+    reporting_date: Date,
+  ): Promise<Reports[]> {
+    const query = this.reportsRepository
+      .createQueryBuilder('report')
+      .skip(skip)
+      .take(take);
+
+    if (reporting_date) {
+      query.where('report.reporting_date LIKE :reporting_date', {
+        reporting_date: `%${reporting_date}%`,
+      });
+    }
+
+    return query.getMany();
+  }
 }

@@ -1,3 +1,5 @@
+import { IsNumberString, IsOptional, IsString } from 'class-validator';
+
 export class ReportsResponseDto {
   readonly id: string;
   readonly invoice: string;
@@ -26,4 +28,18 @@ export class ReportsResponseDto {
     readonly quantity: number;
     readonly total_price: number;
   }[];
+}
+
+export class SearchReports {
+  @IsOptional()
+  @IsNumberString()
+  readonly page: string = '1';
+
+  @IsOptional()
+  @IsNumberString()
+  readonly limit: string = '10';
+
+  @IsOptional()
+  @IsString()
+  readonly reporting_date: string;
 }
