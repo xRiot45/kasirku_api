@@ -25,7 +25,7 @@ export class ReportsRepository implements IReportsRepository {
     return savedReports;
   }
 
-  async countFilteredReports(reporting_date: Date): Promise<number> {
+  async countFilteredReports(reporting_date: string): Promise<number> {
     const query = this.reportsRepository.createQueryBuilder('report');
 
     if (reporting_date) {
@@ -40,7 +40,7 @@ export class ReportsRepository implements IReportsRepository {
   async findAllReports(
     skip: number,
     take: number,
-    reporting_date: Date,
+    reporting_date: string,
   ): Promise<Reports[]> {
     const query = this.reportsRepository
       .createQueryBuilder('report')
