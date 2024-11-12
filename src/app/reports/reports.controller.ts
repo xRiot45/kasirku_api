@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -19,8 +19,8 @@ export class ReportsController {
   }
 
   @Get('/all')
-  //   @UseGuards(AuthGuard, RolesGuard)
-  //   @Roles('Admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
   async findAllReportsController(
     @Query() query: SearchReports,
   ): Promise<IBaseResponse<ReportsResponseDto[]>> {
@@ -34,5 +34,12 @@ export class ReportsController {
       limitNumber,
       reporting_date,
     );
+  }
+
+  @Get('/show/:id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Admin')
+  async findReportsByIdController(@Param('id') id: string) {
+    return this.reportsService.findReportsByIdService(id);
   }
 }

@@ -8,4 +8,5 @@ export interface IReportsRepository {
     take: number,
     reporting_date: string,
   ): Promise<Reports[]>;
+  findReportById(id: string): Promise<Reports | undefined>;
 }

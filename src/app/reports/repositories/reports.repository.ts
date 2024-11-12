@@ -55,4 +55,10 @@ export class ReportsRepository implements IReportsRepository {
 
     return query.getMany();
   }
+
+  async findReportById(id: string): Promise<Reports | undefined> {
+    return await this.reportsRepository.findOne({
+      where: { id },
+    });
+  }
 }
