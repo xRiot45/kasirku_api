@@ -11,7 +11,7 @@ export class ReportsController {
 
   @Post('/create')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('Admin')
+  @Roles('Admin', 'Koki')
   async createReportsController(): Promise<
     IBaseResponse<ReportsResponseDto[]>
   > {
