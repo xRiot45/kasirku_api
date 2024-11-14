@@ -8,6 +8,7 @@ import { CartsModule } from './carts/carts.module';
 import { OrdersModule } from './orders/orders.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { ReportsModule } from './reports/reports.module';
+import { ChartsModule } from './charts/charts.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ReportsModule } from './reports/reports.module';
     OrdersModule,
     CheckoutModule,
     ReportsModule,
+    ChartsModule,
   ],
   providers: [],
 })
