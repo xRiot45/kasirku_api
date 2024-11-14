@@ -43,7 +43,20 @@ export class ChartsService {
   }
 
   async countSaleByYearService(year?: string): Promise<IBaseResponse> {
-    const data = {};
+    const data = {
+      jan: 0,
+      feb: 0,
+      mar: 0,
+      apr: 0,
+      may: 0,
+      jun: 0,
+      jul: 0,
+      aug: 0,
+      sep: 0,
+      oct: 0,
+      nov: 0,
+      dec: 0,
+    };
 
     const whereCondition = year
       ? {
@@ -54,9 +67,10 @@ export class ChartsService {
         }
       : {};
 
+    // Pastikan whereCondition diterapkan pada `find`
     const sumTotalOrderPriceByDate = await this.reportsRepository.find({
       select: ['reporting_date', 'total_order_price'],
-      ...whereCondition,
+      where: whereCondition, // tambahkan ini untuk memastikan kondisi diterapkan
     });
 
     const monthMap = {
@@ -75,34 +89,17 @@ export class ChartsService {
     };
 
     sumTotalOrderPriceByDate.forEach((item) => {
-      const date = item.reporting_date.toISOString().split('-');
-      const year = date[0];
-      const month = date[1];
+      const month = item.reporting_date.toISOString().split('-')[1];
       const monthKey = monthMap[month];
 
-      if (!data[year]) {
-        data[year] = {
-          jan: 0,
-          feb: 0,
-          mar: 0,
-          apr: 0,
-          may: 0,
-          jun: 0,
-          jul: 0,
-          aug: 0,
-          sep: 0,
-          oct: 0,
-          nov: 0,
-          dec: 0,
-        };
-      }
-
       if (monthKey) {
-        data[year][monthKey] += item.total_order_price;
+        data[monthKey] += item.total_order_price;
       }
     });
 
-    if (year && !data[year]) {
+    const isEmptyData = Object.values(data).every((value) => value === 0);
+
+    if (year && isEmptyData) {
       return {
         statusCode: HttpStatus.OK,
         message: `No sales data found for year ${year}`,
@@ -112,8 +109,8 @@ export class ChartsService {
 
     return {
       statusCode: HttpStatus.OK,
-      message: 'Count sale by month and year successfully',
-      data: year ? data[year] : data,
+      message: 'Count sale by month successfully',
+      data,
     };
   }
 
@@ -136,7 +133,6 @@ export class ChartsService {
   }
 
   async countOrderStatusService(): Promise<IBaseResponse> {
-    // Query untuk menghitung jumlah order berdasarkan `order_status`
     const results = await this.reportsRepository
       .createQueryBuilder('report')
       .select('report.order_status', 'order_status')
@@ -144,27 +140,23 @@ export class ChartsService {
       .groupBy('report.order_status')
       .getRawMany();
 
-    // Inisialisasi data dengan jumlah 0 untuk setiap status
     const data = {
-      [OrderStatusType.CONFIRMED]: 0,
-      [OrderStatusType.PROCESSING]: 0,
-      [OrderStatusType.COMPLETED]: 0,
-      [OrderStatusType.CANCELED]: 0,
+      order_dikonfirmasi: 0,
+      order_sedang_diproses: 0,
+      order_selesai: 0,
+      order_dibatalkan: 0,
     };
 
-    // Map hasil query ke dalam objek `data`
     results.forEach((item) => {
       const status = item.order_status;
       const count = parseInt(item.count, 10);
 
-      if (status === OrderStatusType.CONFIRMED)
-        data[OrderStatusType.CONFIRMED] = count;
+      if (status === OrderStatusType.CONFIRMED) data.order_dikonfirmasi = count;
       else if (status === OrderStatusType.PROCESSING)
-        data[OrderStatusType.PROCESSING] = count;
-      else if (status === OrderStatusType.COMPLETED)
-        data[OrderStatusType.COMPLETED] = count;
+        data.order_sedang_diproses = count;
+      else if (status === OrderStatusType.COMPLETED) data.order_selesai = count;
       else if (status === OrderStatusType.CANCELED)
-        data[OrderStatusType.CANCELED] = count;
+        data.order_dibatalkan = count;
     });
 
     // Return hasil dalam format response
