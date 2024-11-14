@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Users } from '../users/entities/users.entity';
 import { Products } from '../products/entities/products.entity';
 import { Reports } from '../reports/entities/report.entity';
@@ -42,11 +42,21 @@ export class ChartsService {
     };
   }
 
-  async countSaleByMonthService(): Promise<IBaseResponse> {
+  async countSaleByYearService(year?: string): Promise<IBaseResponse> {
     const data = {};
+
+    const whereCondition = year
+      ? {
+          reporting_date: Between(
+            new Date(`${year}-01-01`),
+            new Date(`${year}-12-31`),
+          ),
+        }
+      : {};
 
     const sumTotalOrderPriceByDate = await this.reportsRepository.find({
       select: ['reporting_date', 'total_order_price'],
+      ...whereCondition,
     });
 
     const monthMap = {
@@ -92,12 +102,18 @@ export class ChartsService {
       }
     });
 
+    if (year && !data[year]) {
+      return {
+        statusCode: HttpStatus.OK,
+        message: `No sales data found for year ${year}`,
+        data: [],
+      };
+    }
+
     return {
       statusCode: HttpStatus.OK,
       message: 'Count sale by month and year successfully',
-      data: {
-        ...data,
-      },
+      data: year ? data[year] : data,
     };
   }
 

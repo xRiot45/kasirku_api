@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ChartsService } from './charts.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -15,11 +15,13 @@ export class ChartsController {
     return this.chartsService.countDataService();
   }
 
-  @Get('/sale-by-month')
+  @Get('/sale-by-year')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles('Admin')
-  async countSaleByMonthController(): Promise<IBaseResponse> {
-    return this.chartsService.countSaleByMonthService();
+  async countSaleByYearController(
+    @Query('year') year?: string,
+  ): Promise<IBaseResponse> {
+    return this.chartsService.countSaleByYearService(year);
   }
 
   @Get('/total-profit')
