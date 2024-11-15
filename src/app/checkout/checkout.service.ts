@@ -598,4 +598,42 @@ export class CheckoutService {
       );
     }
   }
+
+  async deleteCheckoutService(id: string): Promise<WebResponse> {
+    try {
+      const findCheckout = await this.checkoutRepository.findCheckoutById(id);
+      if (!findCheckout) {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.NOT_FOUND,
+            error: 'Not Found',
+            message: 'Checkout not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      await this.checkoutRepository.removeCheckout(id);
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Remove checkout successfully',
+      };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        this.logger.error(`Error remove checkout: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error(`Error remove checkout: ${error.message}`);
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

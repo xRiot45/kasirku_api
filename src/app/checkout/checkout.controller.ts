@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -90,5 +91,14 @@ export class CheckoutController {
     @Param('id') id: string,
   ): Promise<IBaseResponse<CheckoutResponseDto>> {
     return this.checkoutService.changeOrderStatusToCancelledService(id);
+  }
+
+  @Delete('/delete/:id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('Kasir')
+  async deleteCheckoutController(
+    @Param('id') id: string,
+  ): Promise<WebResponse> {
+    return this.checkoutService.deleteCheckoutService(id);
   }
 }

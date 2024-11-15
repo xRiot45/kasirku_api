@@ -1,10 +1,9 @@
-import * as cookieParser from 'cookie-parser';
-import * as express from 'express';
-import { join } from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { APP_PORT } from './configs/environment.config';
+import { join } from 'path';
 import { MainModule } from './main.module';
 
 async function bootstrap() {
@@ -32,6 +31,6 @@ async function bootstrap() {
   app.useLogger(logger);
   app.use(cookieParser());
 
-  await app.listen(APP_PORT || 3000);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

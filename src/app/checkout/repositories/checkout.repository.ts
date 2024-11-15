@@ -101,4 +101,8 @@ export class CheckoutRepository implements ICheckoutRepository {
 
     return query.getCount();
   }
+
+  async removeCheckout(id: string): Promise<void> {
+    await this.checkoutRepository.delete(id);
+  }
 }
