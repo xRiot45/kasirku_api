@@ -6,6 +6,12 @@ import { Products } from '../products/entities/products.entity';
 import { Reports } from '../reports/entities/report.entity';
 import { Role } from '../role/entities/role.entity';
 import { OrderStatusType } from 'src/common/enums/order-status.enum';
+import {
+  CountDataResponseDto,
+  CountOrderStatusResponseDto,
+  CountSaleByYearResponseDto,
+  CountTotalProfitResponseDto,
+} from './dtos/charts.dto';
 
 @Injectable()
 export class ChartsService {
@@ -20,7 +26,7 @@ export class ChartsService {
     private readonly reportsRepository: Repository<Reports>,
   ) {}
 
-  async countDataService(): Promise<IBaseResponse> {
+  async countDataService(): Promise<IBaseResponse<CountDataResponseDto>> {
     const users = await this.userRepository.count();
     const products = await this.productsRepository.count();
     const reports = await this.reportsRepository.count();
@@ -42,7 +48,9 @@ export class ChartsService {
     };
   }
 
-  async countSaleByYearService(year?: string): Promise<IBaseResponse> {
+  async countSaleByYearService(
+    year?: string,
+  ): Promise<IBaseResponse<CountSaleByYearResponseDto>> {
     const data = {
       jan: 0,
       feb: 0,
@@ -67,10 +75,9 @@ export class ChartsService {
         }
       : {};
 
-    // Pastikan whereCondition diterapkan pada `find`
     const sumTotalOrderPriceByDate = await this.reportsRepository.find({
       select: ['reporting_date', 'total_order_price'],
-      where: whereCondition, // tambahkan ini untuk memastikan kondisi diterapkan
+      where: whereCondition,
     });
 
     const monthMap = {
@@ -97,15 +104,15 @@ export class ChartsService {
       }
     });
 
-    const isEmptyData = Object.values(data).every((value) => value === 0);
+    // const isEmptyData = Object.values(data).every((value) => value === 0);
 
-    if (year && isEmptyData) {
-      return {
-        statusCode: HttpStatus.OK,
-        message: `No sales data found for year ${year}`,
-        data: [],
-      };
-    }
+    // if (year && isEmptyData) {
+    //   return {
+    //     statusCode: HttpStatus.OK,
+    //     message: `No sales data found for year ${year}`,
+    //     data: [],
+    //   };
+    // }
 
     return {
       statusCode: HttpStatus.OK,
@@ -114,7 +121,9 @@ export class ChartsService {
     };
   }
 
-  async countTotalProfitService(): Promise<IBaseResponse> {
+  async countTotalProfitService(): Promise<
+    IBaseResponse<CountTotalProfitResponseDto>
+  > {
     const totalProfit = await this.reportsRepository.find({
       select: ['total_order_price'],
     });
@@ -132,7 +141,9 @@ export class ChartsService {
     };
   }
 
-  async countOrderStatusService(): Promise<IBaseResponse> {
+  async countOrderStatusService(): Promise<
+    IBaseResponse<CountOrderStatusResponseDto>
+  > {
     const results = await this.reportsRepository
       .createQueryBuilder('report')
       .select('report.order_status', 'order_status')
