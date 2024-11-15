@@ -4,12 +4,15 @@ import { OrderStatusType } from 'src/common/enums/order-status.enum';
 import { Repository } from 'typeorm';
 import { Checkout } from '../entities/checkout.entity';
 import { ICheckoutRepository } from '../interfaces/checkout.interface';
+import { Orders } from 'src/app/orders/entities/orders.entity';
 
 @Injectable()
 export class CheckoutRepository implements ICheckoutRepository {
   constructor(
     @InjectRepository(Checkout)
     private readonly checkoutRepository: Repository<Checkout>,
+    @InjectRepository(Orders)
+    private readonly ordersRepository: Repository<Orders>,
   ) {}
 
   async checkoutOrders(data: Checkout[]): Promise<Checkout[]> {
@@ -103,6 +106,9 @@ export class CheckoutRepository implements ICheckoutRepository {
   }
 
   async removeCheckout(id: string): Promise<void> {
+    await this.ordersRepository.delete({
+      checkoutId: { id },
+    });
     await this.checkoutRepository.delete(id);
   }
 }
