@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="#" target="blank"><img src="./assets/images/logo.png" width="200" alt="Kasirku Logo" /></a>
+  <a href="#" target="blank"><img src="./public/images/logo.png" width="200" alt="Kasirku Logo" /></a>
 </p>
 
 <p align="center">Kasirku RESTful API</p>
@@ -356,7 +356,6 @@ $ npm run start:prod
 - **Endpoint:** `/api/charts/count-order-status`
 - **Method:** `GET`
 - **Description:** Get the count of orders by status.
-
 
 ## Authorization
 

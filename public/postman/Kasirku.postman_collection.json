@@ -1,0 +1,1997 @@
+{
+	"info": {
+		"_postman_id": "404a1cc2-6472-4c11-9687-064c1cb8ac7e",
+		"name": "Kasirku",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24370790",
+		"_collection_link": "https://solar-spaceship-690690.postman.co/workspace/Team-Workspace~3f09cbbc-5ce7-4adf-8d80-63a348c6c82b/collection/24370790-404a1cc2-6472-4c11-9687-064c1cb8ac7e?action=share&source=collection_link&creator=24370790"
+	},
+	"item": [
+		{
+			"name": "Auth API",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"koki@gmail.com\",\n    \"full_name\": \"Koki Keren\",\n    \"roleId\": \"e325206f-3809-478d-958e-a1f2479db723\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/auth/register",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User | Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"Admin#123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/auth/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User | Kasir",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"kasir@gmail.com\",\n    \"password\": \"Kasir#123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/auth/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User | Koki",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"koki@gmail.com\",\n    \"password\": \"Koki#123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/auth/login",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/auth/refresh-token",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/auth/logout",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role API",
+			"item": [
+				{
+					"name": "Create Role (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role_name\": \"Koki\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/role/create",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"role",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Role (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/role",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"role"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role By Id (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/role/show/b745b8c9-4028-4ae0-97c2-073e3a532a1d",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"role",
+								"show",
+								"b745b8c9-4028-4ae0-97c2-073e3a532a1d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role_name\": \"Kasir\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/role/update/6f1237a6-574c-43c4-a493-f5e10de5eafa",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"role",
+								"update",
+								"6f1237a6-574c-43c4-a493-f5e10de5eafa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Role (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/role/delete/6f1237a6-574c-43c4-a493-f5e10de5eafa",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"role",
+								"delete",
+								"6f1237a6-574c-43c4-a493-f5e10de5eafa"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Category API",
+			"item": [
+				{
+					"name": "Create Product Category (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_category_name\": \"Snack\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/product-category/create",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"product-category",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all product category (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/product-category?page=1",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"product-category"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find product category By ID (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/product-category/show/6bf01107-56fa-410d-b693-2fac5a5e5a4",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"product-category",
+								"show",
+								"6bf01107-56fa-410d-b693-2fac5a5e5a4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Category (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_category_name\": \"Snack 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/product-category/update/6bf01107-56fa-410d-b693-2fac5a5e5a47",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"product-category",
+								"update",
+								"6bf01107-56fa-410d-b693-2fac5a5e5a47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product Category (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/product-category/delete/6bf01107-56fa-410d-b693-2fac5a5e5a47",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"product-category",
+								"delete",
+								"6bf01107-56fa-410d-b693-2fac5a5e5a47"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users API",
+			"item": [
+				{
+					"name": "Get Me (All Role)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/users/me",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/users",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "full_name",
+									"value": "test",
+									"disabled": true
+								},
+								{
+									"key": "employee_number",
+									"value": "VMJO4W5Q1",
+									"disabled": true
+								},
+								{
+									"key": "role_name",
+									"value": "Koki",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/users/show/6aec8b12-1d81-465c-902b-fca4c77cd41c",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"show",
+								"6aec8b12-1d81-465c-902b-fca4c77cd41c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/users/reset-password/21072cc5-ba18-4dd8-ab14-53a5ac300f62",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"reset-password",
+								"21072cc5-ba18-4dd8-ab14-53a5ac300f62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"tomasalberto527@gmail.com\",\n    \"employee_number\": \"IJJOG4XH\",\n    \"password\": \"Karyawan#123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/users/delete/29762658-9f5f-4a4b-ac53-1e3cf4950a7d",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"delete",
+								"29762658-9f5f-4a4b-ac53-1e3cf4950a7d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile (All Role)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "full_name",
+									"value": "Thomas Alberto",
+									"type": "text"
+								},
+								{
+									"key": "birthday_date",
+									"value": "2046-10-02",
+									"type": "text"
+								},
+								{
+									"key": "place_of_birth",
+									"value": "Pontianak",
+									"type": "text"
+								},
+								{
+									"key": "phone_number",
+									"value": "081234567879",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Laki-Laki",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Jl.Kom Yos Sudarso",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/home/xriot/Pictures/Foto Diri Sendiri/WhatsApp Image 2024-09-18 at 15.30.09.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/users/update-profile",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"update-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile User By Admin(Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "full_name",
+									"value": "Admin Ganteng 23",
+									"type": "text"
+								},
+								{
+									"key": "birthday_date",
+									"value": "2046-10-02",
+									"type": "text"
+								},
+								{
+									"key": "place_of_birth",
+									"value": "Pontianak",
+									"type": "text"
+								},
+								{
+									"key": "phone_number",
+									"value": "081234567879",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Laki-Laki",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Jl.Kom Yos Sudarso",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "/home/xriot/Pictures/Foto Diri Sendiri/WhatsApp Image 2024-09-18 at 15.30.09.jpeg"
+								},
+								{
+									"key": "roleId",
+									"value": "fadd17bf-70e0-4e0b-97a1-70330449ae53",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/users/update-profile/6aec8b12-1d81-465c-902b-fca4c77cd41c",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"update-profile",
+								"6aec8b12-1d81-465c-902b-fca4c77cd41c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password (All Role)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIxMDcyY2M1LWJhMTgtNGRkOC1hYjE0LTUzYTVhYzMwMGY2MiIsImZ1bGxfbmFtZSI6IkFkbWluIEdhbnRlbmcgMTE0IiwiZW1haWwiOiJhcmllc21hczE5NDVAZ21haWwuY29tIiwiZW1wbG95ZWVfbnVtYmVyIjoiQU5FOTFWUzAiLCJyb2xlIjp7ImlkIjoiZmFkZDE3YmYtNzBlMC00ZTBiLTk3YTEtNzAzMzA0NDlhZTUzIiwicm9sZV9uYW1lIjoiQWRtaW4ifSwiaWF0IjoxNzI4Mjg1MTU4LCJleHAiOjE3MjgzNzE1NTh9.9xoUNBsLs79PsJ0JBQHDYJB2_lx8i1r8p5M7pczZ8TY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ariesmas1945@gmail.com\",\n    \"old_password\": \"Admin#1234\",\n    \"new_password\": \"Admin#123\",\n    \"confirm_password\": \"Admin#123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/users/change-password",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"users",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product API",
+			"item": [
+				{
+					"name": "Create Product (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_name",
+									"value": "Mie Goreng 10",
+									"type": "text"
+								},
+								{
+									"key": "product_stock",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "product_price",
+									"value": "15000",
+									"type": "text"
+								},
+								{
+									"key": "product_description",
+									"value": "Testing",
+									"type": "text"
+								},
+								{
+									"key": "product_variants[]",
+									"value": "Original",
+									"type": "text"
+								},
+								{
+									"key": "product_variants[]",
+									"value": "Pedas",
+									"type": "text"
+								},
+								{
+									"key": "product_variants[]",
+									"value": "Normal",
+									"type": "text"
+								},
+								{
+									"key": "product_photo",
+									"type": "file",
+									"src": "/home/xriot/Downloads/mie-goreng.jpg"
+								},
+								{
+									"key": "productCategoryId",
+									"value": "461cd66f-20a9-4a1c-bd18-82fcaed2c711",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/products/create",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"products",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/products/show/122d80e7-c98c-43a3-8126-de1440e36bf0",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"products",
+								"show",
+								"122d80e7-c98c-43a3-8126-de1440e36bf0"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/products?limit=10",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "product_name",
+									"value": "Kopi",
+									"disabled": true
+								},
+								{
+									"key": "product_stock",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "product_price",
+									"value": "10000",
+									"disabled": true
+								},
+								{
+									"key": "product_code",
+									"value": "YI8SGP3U7K",
+									"disabled": true
+								},
+								{
+									"key": "product_category_name",
+									"value": "Makanan",
+									"disabled": true
+								},
+								{
+									"key": "product_status",
+									"value": "Tidak Tersedia",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_name",
+									"value": "Coffee tubruk 2",
+									"type": "text"
+								},
+								{
+									"key": "product_stock",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "product_price",
+									"value": "1000",
+									"type": "text"
+								},
+								{
+									"key": "product_description",
+									"value": "Testing",
+									"type": "text"
+								},
+								{
+									"key": "product_variants[]",
+									"value": "Biasa Saja",
+									"type": "text"
+								},
+								{
+									"key": "product_variants[]",
+									"value": "Pedas",
+									"type": "text"
+								},
+								{
+									"key": "product_photo",
+									"type": "file",
+									"src": "/home/xriot/Downloads/coffee-2.jpg"
+								},
+								{
+									"key": "product_status",
+									"value": "Tersedia",
+									"type": "text"
+								},
+								{
+									"key": "productCategoryId",
+									"value": "461cd66f-20a9-4a1c-bd18-82fcaed2c711",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/products/update/2dd9a9e0-f593-4452-962b-c80ac91f0cb4",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"products",
+								"update",
+								"2dd9a9e0-f593-4452-962b-c80ac91f0cb4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product (Admin Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/products/delete/fc5b2e48-605d-40f1-a060-a27d842bc47f",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"products",
+								"delete",
+								"fc5b2e48-605d-40f1-a060-a27d842bc47f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts API",
+			"item": [
+				{
+					"name": "Add Product To Cart (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": \"2583941a-7dcd-4176-9196-0820d2628c95\",\n    \"selected_variant\": \"Manis\",\n    \"quantity\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/carts/add-product-to-cart",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"carts",
+								"add-product-to-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Carts (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/carts/all",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"carts",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Carts By Id (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/carts/delete/7668f516-1f18-4496-8792-d6c630da7ca3",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"carts",
+								"delete",
+								"7668f516-1f18-4496-8792-d6c630da7ca3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all carts (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/carts/delete/all",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"carts",
+								"delete",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders API",
+			"item": [
+				{
+					"name": "Create order (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/orders/create",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"orders",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all orders (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/orders/all",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"orders",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Order By ID (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/orders/show/9f04c305-e2aa-4a1a-bc62-04e08315471f",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"orders",
+								"show",
+								"9f04c305-e2aa-4a1a-bc62-04e08315471f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order By Id (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/orders/delete/99440e28-c8cc-41a9-b9d5-d4641e9bcfcb",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"orders",
+								"delete",
+								"99440e28-c8cc-41a9-b9d5-d4641e9bcfcb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Order (Cashier Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/orders/delete/all",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"orders",
+								"delete",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checkout API",
+			"item": [
+				{
+					"name": "Checkout Order (Kasir Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_amount\": 1,\n    \"seat_number\": \"1A\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api_url}}/checkout/create",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find all checkout (Kasir & Koki Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_koki}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/all",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"all"
+							],
+							"query": [
+								{
+									"key": "order_status",
+									"value": "Order Dibatalkan",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find checkout by id (Kasir & Koki Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_koki}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/show/91b0b4e7-40cd-4f17-9014-db476567985c",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"show",
+								"91b0b4e7-40cd-4f17-9014-db476567985c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change order status to confirmed (Kasir Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/status/confirmed/56a32994-caea-4a0b-afa9-feb3e7a3947e",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"status",
+								"confirmed",
+								"56a32994-caea-4a0b-afa9-feb3e7a3947e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change order status to processed (Kasir & Koki Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/status/processed/56a32994-caea-4a0b-afa9-feb3e7a3947e",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"status",
+								"processed",
+								"56a32994-caea-4a0b-afa9-feb3e7a3947e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change order status to completed (Kasir & Koki Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/status/completed/56a32994-caea-4a0b-afa9-feb3e7a3947e",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"status",
+								"completed",
+								"56a32994-caea-4a0b-afa9-feb3e7a3947e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change order status to cancelled (Kasir Guard)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/status/cancelled/58b67c4f-6277-4842-af7a-c3bb62262121",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"status",
+								"cancelled",
+								"58b67c4f-6277-4842-af7a-c3bb62262121"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Checkout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_kasir}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/checkout/delete/590d7f4a-9487-4970-970c-6ee820ee7aa1",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"checkout",
+								"delete",
+								"590d7f4a-9487-4970-970c-6ee820ee7aa1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports API",
+			"item": [
+				{
+					"name": "Create Reports",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_koki}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/reports/create",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"reports",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Reports",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/reports/all",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"reports",
+								"all"
+							],
+							"query": [
+								{
+									"key": "reporting_date",
+									"value": "2024-11-12",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find reports by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/reports/show/e80ae51a-2a77-414c-b5e6-891173552710",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"reports",
+								"show",
+								"e80ae51a-2a77-414c-b5e6-891173552710"
+							],
+							"query": [
+								{
+									"key": "reporting_date",
+									"value": "2024-11-10",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Charts API",
+			"item": [
+				{
+					"name": "Count Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/charts/count-data",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"charts",
+								"count-data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Count Sale By Year",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/charts/sale-by-year?year=2025",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"charts",
+								"sale-by-year"
+							],
+							"query": [
+								{
+									"key": "year",
+									"value": "2025"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Count Total Profit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/charts/total-profit",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"charts",
+								"total-profit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Count Order Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token_admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/charts/count-order-status",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"charts",
+								"count-order-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Image API",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/uploads/1731655296787-906719529-61949959e07d3 (1).jpg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"uploads",
+						"1731655296787-906719529-61949959e07d3 (1).jpg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tamu-bola.hotamadev.com/api/courses_material/show",
+					"protocol": "https",
+					"host": [
+						"tamu-bola",
+						"hotamadev",
+						"com"
+					],
+					"path": [
+						"api",
+						"courses_material",
+						"show"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
