@@ -7,7 +7,7 @@
 
 ## Description
 
-Kasirku adalah sebuah aplikasi berbasis web mobile, dan RESTful API yang dirancang untuk mendukung manajemen transaksi dan operasional kasir, sebagai bagian dari tugas akhir mata kuliah Teknologi Web Service pada Semester 5.
+Kasirku is a mobile web-based application, and RESTful API designed to support transaction management and cashier operations, as part of the final project of the Web Service Technology course in Semester 5.
 
 - **Version :** v1.0.0
 - **Developer :** Thomas Alberto
