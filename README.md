@@ -61,6 +61,9 @@ $ cd kasirku_api
 
 # Install all dependencies
 $ npm install
+
+# Create Uplaods Folder
+$ mkdir uploads
 ```
 
 ## Setup Environment Variable
