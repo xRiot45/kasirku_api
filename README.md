@@ -1,85 +1,366 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <a href="#" target="blank"><img src="./assets/images/logo.png" width="200" alt="Kasirku Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<p align="center">Kasirku RESTful API</p>
+<p align="center">
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Kasirku adalah sebuah aplikasi berbasis web mobile, dan RESTful API yang dirancang untuk mendukung manajemen transaksi dan operasional kasir, sebagai bagian dari tugas akhir mata kuliah Teknologi Web Service pada Semester 5.
 
-## Project setup
+- **Version :** v1.0.0
+- **Developer :** Thomas Alberto
+- **Released On :** November 20 2024
+- **Status :** Stable Release
+- **Contact :** [tomasalberto527@gmail.com](mailto:tomasalberto527@gmail.com)
+
+## Contents
+
+1. [Description](#description)
+2. [System Requirements](#system-requirements)
+3. [Tech Stack](#tech-stack)
+4. [Security](#security)
+5. [Installation](#installation)
+6. [Setup Environment Variable](#setup-environtment-variable)
+7. [Running the App](#running-the-app)
+8. [Features](#features)
+9. [Authorization](#authorization)
+
+## System Requirements
+
+- Linux, Windows or MacOS
+- Node JS v18 or later
+- MySQL
+- npm (Node Package Manager)
+
+## Tech Stack
+
+- Nest JS
+- Type ORM
+- MySQL
+- TypeScript
+- Node JS
+
+## Security
+
+- Authentication
+- Encryption and Hasing
+- Authorization
+- Cors
+- Rate Limiting
+
+## Installation
 
 ```bash
+# Clone project
+$ git clone https://github.com/xRiot45/kasirku_api.git
+
+# Navigate to project repository
+$ cd kasirku_api
+
+# Install all dependencies
 $ npm install
 ```
 
-## Compile and run the project
+## Setup Environment Variable
 
 ```bash
-# development
+# Change name file
+$ cp .env.example .env
+
+# Application
+APP_URL= # Application URL
+APP_NAME= # Application Name
+APP_PORT= # Application Port
+APP_ENV= # Application Environment
+
+# Database
+MYSQL_HOST= # MySQL Host
+MYSQL_PORT= # MySQL Port
+MYSQL_USERNAME= # MySQL Username
+MYSQL_PASSWORD= # MySQL Password
+MYSQL_DATABASE= # MySQL Database
+MYSQL_SYNCHRONIZE= # MySQL Synchronize
+
+# Jwt
+ACCESS_TOKEN_SECRET= # Your Access Token Secret for JWT
+REFRESH_TOKEN_SECRET= # Your Refresh Token Secret for JWT
+```
+
+## Running The App
+
+```bash
+# Watch mode
 $ npm run start
 
-# watch mode
+# Development mode
 $ npm run start:dev
 
-# production mode
+# Production mode
 $ npm run start:prod
 ```
 
-## Run tests
+## Features
 
-```bash
-# unit tests
-$ npm run test
+### Authentication API
 
-# e2e tests
-$ npm run test:e2e
+#### 1. Login
 
-# test coverage
-$ npm run test:cov
-```
+- **Endpoint:** `/api/auth/login`
+- **Method:** `POST`
+- **Description:** Authenticates the user and returns a token for accessing protected routes.
 
-## Resources
+#### 2. Register
 
-Check out a few resources that may come in handy when working with NestJS:
+- **Endpoint:** `/api/auth/register`
+- **Method:** `POST`
+- **Description:** Registers a new user into the system.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### 3. Refresh Token
 
-## Support
+- **Endpoint:** `/api/auth/refresh-token`
+- **Method:** `POST`
+- **Description:** Refreshes the authentication token.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### 4. Logout
 
-## Stay in touch
+- **Endpoint:** `/api/auth/logout`
+- **Method:** `DELETE`
+- **Description:** Logs the user out and invalidates the session.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Role API
 
-## License
+- **Endpoint:** `/api/role`
+- **Methods:**
+  - `POST /create`: Create a new role.
+  - `GET`: Get all roles.
+  - `GET /show/{roleId}`: Get a specific role by ID.
+  - `PUT /{roleId}`: Update a role by ID.
+  - `DELETE /{roleId}`: Delete a role by ID.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Product Category API
+
+- **Endpoint:** `/api/product-category`
+- **Methods:**
+  - `POST /create`: Create a new product category.
+  - `GET`: Get all product categories.
+  - `GET /show/{productCategoryId}`: Get a specific product category by ID.
+  - `PUT /{productCategoryId}`: Update a product category by ID.
+  - `DELETE /{productCategoryId}`: Delete a product category by ID.
+
+### Users API
+
+#### 1. Get Data
+
+- **Endpoint:** `/api/users/me`
+- **Method:** `GET`
+- **Description:** Retrieve data of a specific user by their access token.
+
+#### 2. Get All Users
+
+- **Endpoint:** `/api/users`
+- **Method:** `GET`
+- **Description:** Get a list of all users in the system.
+
+#### 3. Get User by ID
+
+- **Endpoint:** `/api/users/show/{userId}`
+- **Method:** `GET`
+- **Description:** Get user details by their ID.
+
+#### 4. Reset Password by Admin
+
+- **Endpoint:** `/api/users/reset-password/{userId}`
+- **Method:** `PUT`
+- **Description:** Allows an admin to reset a user's password.
+
+#### 5. Delete User
+
+- **Endpoint:** `/api/users/delete/{userId}`
+- **Method:** `DELETE`
+- **Description:** Delete a specific user by their ID.
+
+#### 6. Update Profile
+
+- **Endpoint:** `/api/users/update-profile`
+- **Method:** `PUT`
+- **Description:** Update the logged-in user's profile.
+
+#### 7. Update Profile by Admin
+
+- **Endpoint:** `/api/users/update-profile/{userId}`
+- **Method:** `PUT`
+- **Description:** Admin can update any user's profile.
+
+### Product API
+
+- **Endpoint:** `/api/products`
+- **Methods:**
+  - `POST /create`: Create a new product.
+  - `GET`: Get all products.
+  - `GET /show/{productId}`: Get a specific product by ID.
+  - `PUT /{productId}`: Update a product by ID.
+  - `DELETE /{productId}`: Delete a product by ID.
+
+### Carts API
+
+#### 1. Add Product to Cart
+
+- **Endpoint:** `/api/carts/add-product-to-cart`
+- **Method:** `POST`
+- **Description:** Add a product to cart.
+
+#### 2. Get All Data Carts
+
+- **Endpoint:** `/api/carts/all`
+- **Method:** `GET`
+- **Description:** Retrieve all cart data.
+
+#### 3. Delete Cart by ID
+
+- **Endpoint:** `/api/carts/delete/{cartId}`
+- **Method:** `DELETE`
+- **Description:** Remove a product from the cart by ID.
+
+#### 4. Delete All Carts
+
+- **Endpoint:** `/api/carts/delete/all`
+- **Method:** `DELETE`
+- **Description:** Remove all product from cart.
+
+### Orders API
+
+#### 1. Create Order
+
+- **Endpoint:** `/api/orders/create`
+- **Method:** `POST`
+- **Description:** Create a new order.
+
+#### 2. Get All Data Orders
+
+- **Endpoint:** `/api/orders/all`
+- **Method:** `GET`
+- **Description:** Retrieve all orders.
+
+#### 3. Get Data Order by ID
+
+- **Endpoint:** `/api/orders/show/{orderId}`
+- **Method:** `GET`
+- **Description:** Get order details by ID.
+
+#### 4. Delete Order by ID
+
+- **Endpoint:** `/api/orders/delete/{orderId}`
+- **Method:** `DELETE`
+- **Description:** Delete an order by its ID.
+
+#### 5. Delete All Orders
+
+- **Endpoint:** `/api/ordersdelete/`
+- **Method:** `DELETE`
+- **Description:** Delete all orders.
+
+### Checkout API
+
+#### 1. Checkout Order
+
+- **Endpoint:** `/api/checkout/create`
+- **Method:** `POST`
+- **Description:** Proceed to checkout for the order.
+
+#### 2. Get All Data Checkout
+
+- **Endpoint:** `/api/checkout/all`
+- **Method:** `GET`
+- **Description:** Retrieve all checkout data.
+
+#### 3. Get Data Checkout by ID
+
+- **Endpoint:** `/api/checkout/show/{checkoutId}`
+- **Method:** `GET`
+- **Description:** Get checkout details by ID.
+
+#### 4. Change Order Status to Confirmed
+
+- **Endpoint:** `/api/checkout/status/confirmed/{checkoutId}`
+- **Method:** `PUT`
+- **Description:** Update the order status to 'confirmed'.
+
+#### 5. Change Order Status to Processed
+
+- **Endpoint:** `/api/checkout/status/processed/{checkoutId}`
+- **Method:** `PUT`
+- **Description:** Update the order status to 'processed'.
+
+#### 6. Change Order Status to Completed
+
+- **Endpoint:** `/api/checkout/status/completed/{checkoutId}`
+- **Method:** `PUT`
+- **Description:** Update the order status to 'completed'.
+
+#### 7. Change Order Status to Cancelled
+
+- **Endpoint:** `/api/checkout/status/cancelled/{checkoutId}`
+- **Method:** `PUT`
+- **Description:** Update the order status to 'cancelled'.
+
+#### 8. Remove Checkout
+
+- **Endpoint:** `/api/checkout/delete/{checkoutId}`
+- **Method:** `DELETE`
+- **Description:** Remove checkout record by ID.
+
+### Reports API
+
+#### 1. Create Reports
+
+- **Endpoint:** `/api/reports/create`
+- **Method:** `POST`
+- **Description:** Create a new report.
+
+#### 2. Get All Data Reports
+
+- **Endpoint:** `/api/reports/all`
+- **Method:** `GET`
+- **Description:** Get all reports data.
+
+#### 3. Get Data Report by ID
+
+- **Endpoint:** `/api/reports/show/{reportsId}`
+- **Method:** `GET`
+- **Description:** Get a specific report by ID.
+
+### Charts API
+
+#### 1. Count Data
+
+- **Endpoint:** `/api/charts/count-data`
+- **Method:** `GET`
+- **Description:** Get the count of data.
+
+#### 2. Count Sale by Year
+
+- **Endpoint:** `/api/charts/sale-by-year`
+- **Method:** `GET`
+- **Description:** Get the total sales count by year.
+
+#### 3. Count Total Profit
+
+- **Endpoint:** `/api/charts/total-profit`
+- **Method:** `GET`
+- **Description:** Get the total profit.
+
+#### 4. Count Order Status
+
+- **Endpoint:** `/api/charts/count-order-status`
+- **Method:** `GET`
+- **Description:** Get the count of orders by status.
+
+
+## Authorization
+
+Use the following steps to get an authorization token:
+
+- Log in using the /api/auth/login endpoints.
+- Use the token received in the response to authorize further requests.
